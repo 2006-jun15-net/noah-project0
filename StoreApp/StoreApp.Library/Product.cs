@@ -4,7 +4,7 @@ using System.Text;
 
 namespace StoreApp.Library
 {
-    class Product
+    public class Product
     {
         private double _price;
         public string Name { get; set; }

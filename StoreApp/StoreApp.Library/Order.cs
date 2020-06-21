@@ -5,12 +5,16 @@ using System.Text;
 
 namespace StoreApp.Library
 {
-    class Order
+    public class Order
     {
-        private List<Product> _products;
-        public Location StoreLocation { get; set; }
+        private static int orderIDSeed = 0;
 
-        public Customer CurrentCustomer { get; set; }
+        private List<Product> _products;
+
+        public int OrderID {get;}
+        public Location StoreLocation { get; set;}
+
+        public Customer customer { get; }
 
         public bool OrderAccepted => false;
 
@@ -42,7 +46,11 @@ namespace StoreApp.Library
                 _products = value;
             }
         }
-
+        
+        public Order()
+        {
+            OrderID = orderIDSeed++;
+        }
 
     }
 }

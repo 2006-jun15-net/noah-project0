@@ -4,15 +4,17 @@ using System.Text;
 
 namespace StoreApp.Library
 {
-    class Location
-    {
+    public class Location
+    { 
+        public int LocationID { get; set; }
         public string Name { get; set; }
-        public List<Product> Inventory { get; set; }
-
-        public Location(string name, List<Product> inventory)
+        public Dictionary<Product, int> Inventory { get; set; } 
+        
+        public Location(string name, int locationID)
         {
+            LocationID = locationID;
             Name = name;
-            Inventory = inventory;
+            Inventory = GenerateInventory();
         }
         public void DecreaseInventory(Order order)
         {
@@ -20,12 +22,25 @@ namespace StoreApp.Library
             {
                 foreach(Product p in order.Products)
                 {
-                    Inventory.Remove(p);
+                    Inventory[p] -= 1;
                 }
                
             }
         }
 
+        private Dictionary<Product, int> GenerateInventory()
+        {
+            Dictionary<Product, int> inventory = new Dictionary<Product, int>();
+            
+            Product p1 = new Product("Guitar", 500.00);
+            Product p2 = new Product("Piano", 1000.00);
+            Product p3 = new Product("Drums", 1500.00);
+            inventory.Add(p1,100);
+            inventory.Add(p2,100);
+            inventory.Add(p3,100);
+           
+            return inventory;
+        }
 
     }
 }

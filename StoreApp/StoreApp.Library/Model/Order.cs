@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 
-namespace StoreApp.Library
+namespace StoreApp.Library.Model
 {
     public class Order
     {
@@ -13,11 +13,10 @@ namespace StoreApp.Library
         
         public List<Product> Products { get; set; }
         public int OrderID {get;}
-        public Location StoreLocation { get; set;}
 
-        public Customer CurrentCustomer { get; }
+        public Customer CurrentCustomer { get; set; }
 
-        private string orderDate = "";
+        private DateTime orderDate;
         
         public Order()
         {
@@ -37,12 +36,14 @@ namespace StoreApp.Library
             
         }
 
-        public void SubmitOrder(Location store)
+        public void SubmitOrder()
         {
-            StoreLocation = store;
-            orderDate = DateTime.Now.ToString("F");
-            CurrentCustomer.OrderHistory.Add(this);
+            orderDate = DateTime.Now;
             
+        }
+        public override string ToString()
+        {
+            return $"OrderId: {OrderID}, Products: {Products}, Customer: {CurrentCustomer}, OrderDate: {orderDate}";
         }
 
     }

@@ -1,12 +1,11 @@
 ﻿using Newtonsoft.Json;
-using StoreApp.Library;
+using Newtonsoft.Json.Linq;
+using StoreApp.Library.Model;
+using StoreApp.Library.Repos;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.Design;
-using System.Data.Common;
-using System.Dynamic;
 using System.IO;
-using System.Transactions;
+using System.Linq;
 using System.Xml.Serialization;
 
 namespace StoreApp.App
@@ -17,6 +16,7 @@ namespace StoreApp.App
         static void Main(string[] args)
         {
             Console.WriteLine("running");
+            var dataList = new List<Order>();
             List<Product> p = new List<Product>
             {
                 new Product("p1", 100),
@@ -24,16 +24,37 @@ namespace StoreApp.App
                 new Product("p3", 100)
 
             };
-
-            Order o = new Order
+            List<Product> p2 = new List<Product>
             {
-                Products = p
+                new Product("p1", 100),
+                new Product("p2", 100),
+                new Product("p3", 100)
+
             };
             Customer c = new Customer("noah", "funtanilla");
-            c.OrderHistory.Add(o);
+            Order o = new Order
+            {
+                Products = p,
+                CurrentCustomer = c
+            };
+            Order o2 = new Order
+            {
+                Products = p2,
+                CurrentCustomer = c
+            };
+            dataList.Add(o);
+            dataList.Add(o2);
+
+            OrderHistory oh = new OrderHistory(dataList);
+            
+            string filePath = "../../../../OrderHistory.xml";
+
 
             //act
-            Program.GenerateOrderHistory(c.OrderHistory);
+            GenerateOrderHistory(oh, filePath);
+
+            OrderHistory dataFromJson = GetInitialData(filePath); ;
+            Console.WriteLine(dataFromJson.GetOrderHistory().ToList()[0].Products[0].Name);
             //List<Order> orderHistory = GetInitialData();
 
 
@@ -131,14 +152,14 @@ namespace StoreApp.App
                     //the user selection in and continue to update that store's inventory
                     else
                     {
-                        foreach(var order in oh)
-                        {
-                            if(order.StoreLocation.LocationID == selection)
-                            {
-                                currentLoc = order.StoreLocation;
-                                break;
-                            }
-                        }
+                        //foreach(var order in oh)
+                        //{
+                        //    if(order.StoreLocation.LocationID == selection)
+                        //    {
+                        //        currentLoc = order.StoreLocation;
+                        //        break;
+                        //    }
+                        //}
                     }
                 }
                 else
@@ -193,46 +214,45 @@ namespace StoreApp.App
                         + "5. Quit";
         }
 
-        public static void GenerateOrderHistory(List<Order> OrderHistory)
+        public static void GenerateOrderHistory(OrderHistory oh, string filePath)
         {
             //Generate a new file and output the order history after converting to json format
-            string filePath = "../../../../OrderHistory.json";
-            string data = ConvertToJson(OrderHistory);
-           
-            using (TextWriter tw = new StreamWriter(filePath))
+            
+            var serializer = new XmlSerializer(typeof(List<Order>));
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
             {
-                tw.WriteLine(data);
-            };
+                serializer.Serialize(stream, oh.GetOrderHistory().ToList());
+            }
             
         }
-        public static List<Order> GetInitialData()
+        public static OrderHistory GetInitialData(string filePath)
         {
+            List<Order> oh;
+            var serializer = new XmlSerializer(typeof(List<Order>));
             //Try to read in a json file and assign it to a list of orders (aka an order history)
             //but if none exists just return a null order history
             try
             {
-                string filePath = $"../../../../OrderHistory.json";
-                string initialData = File.ReadAllText(filePath);
-                return JsonConvert.DeserializeObject<List<Order>>(initialData);
-               
+                using (var stream = new FileStream(filePath, FileMode.Open))
+                {
+                    oh = (List<Order>)serializer.Deserialize(stream);
+                }
+                return new OrderHistory(oh);
+
             }
             catch(FileNotFoundException)
             {
                 Console.WriteLine("No data exists. Must first create a data file.");
-                return new List<Order>();
+                return new OrderHistory(new List<Order>());
             }
             
         }
 
-        public static string ConvertToJson<T>(List<T> ListToSerialize)
-        {
-            string json = "";
-            //This converts the list of orders to a json format to write to a file
-            foreach (T item in ListToSerialize)
-            {
-                json += JsonConvert.SerializeObject(item, Formatting.Indented);
-            }
-            return json;
+        public static string ConvertToJson(Object obj)
+        { 
+            //This converts the Order History repo to a json format to write to a file
+            return JsonConvert.SerializeObject(obj, Formatting.Indented);
         }
     }
 }

@@ -1,6 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
-namespace StoreApp.Library
+namespace StoreApp.Library.Model
 {
     public class Customer
     {
@@ -12,13 +13,16 @@ namespace StoreApp.Library
 
         public string LastName { get; set; }
 
-        public List<Order> OrderHistory { get; set; }
-
+        public Customer()
+        {
+            FirstName = null;
+            LastName = null;
+        }
+        
         public Customer(string firstName, string lastName)
         {
             FirstName = firstName;
             LastName = lastName;
-            OrderHistory = new List<Order>();
             CustomerID = customerIDSeed++;
 
         }

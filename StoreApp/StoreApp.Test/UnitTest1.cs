@@ -1,6 +1,8 @@
-using StoreApp.Library;
+using StoreApp.Library.Model;
+using StoreApp.Library.Repos;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Xunit;
 using Program = StoreApp.App.Program;
 
@@ -12,6 +14,7 @@ namespace StoreApp.Test
         public void FileIsBeingWritten()
         {
             //arrange
+            var dataList = new List<Order>();
             List<Product> p = new List<Product>
             {
                 new Product("p1", 100),
@@ -19,16 +22,31 @@ namespace StoreApp.Test
                 new Product("p3", 100)
 
             };
-
-            Order o = new Order
+            List<Product> p2 = new List<Product>
             {
-                Products = p
+                new Product("p1", 100),
+                new Product("p2", 100),
+                new Product("p3", 100)
+
             };
             Customer c = new Customer("noah", "funtanilla");
-            c.OrderHistory.Add(o);
+            Order o = new Order
+            {
+                Products = p,
+                CurrentCustomer = c
+            };
+            Order o2 = new Order
+            {
+                Products = p2,
+                CurrentCustomer = c
+            };
+            dataList.Add(o);
+            dataList.Add(o2);
+
+            OrderHistory oh = new OrderHistory(dataList);
 
             //act
-            Program.GenerateOrderHistory(c.OrderHistory);
+            Program.GenerateOrderHistory(oh, "../../../../OrderHistory.json");
 
             //assert
 
@@ -41,10 +59,12 @@ namespace StoreApp.Test
             //arrange
             
             //act
-            List<Order> dataFromJson = Program.GetInitialData();
+            
+            OrderHistory dataFromJson = Program.GetInitialData("../../../../OrderHistory.json");
+
 
             //assert
-            Assert.Single(dataFromJson);
+            Assert.Equal("p1", dataFromJson.GetOrderHistory().ToList()[0].Products[0].Name);
            
 
         }

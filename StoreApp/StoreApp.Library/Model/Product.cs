@@ -1,15 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace StoreApp.Library
+namespace StoreApp.Library.Model
 {
     public class Product
     {
-        private double _price;
+        private double? _price;
         public string Name { get; set; }
 
-        public double Price
+        public double? Price
         {
             get => _price;
             set
@@ -20,6 +18,11 @@ namespace StoreApp.Library
                 }
                 _price = value;
             }
+        }
+        public Product()
+        {
+            Name = null;
+            Price = null;
         }
 
         public Product(string name, double price)

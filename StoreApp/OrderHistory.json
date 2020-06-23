@@ -1,0 +1,19 @@
+{
+  "Products": [
+    {
+      "Name": "p1",
+      "Price": 100.0
+    },
+    {
+      "Name": "p2",
+      "Price": 100.0
+    },
+    {
+      "Name": "p3",
+      "Price": 100.0
+    }
+  ],
+  "OrderID": 0,
+  "StoreLocation": null,
+  "CurrentCustomer": null
+}

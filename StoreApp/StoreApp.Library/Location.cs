@@ -8,8 +8,8 @@ namespace StoreApp.Library
     { 
         public int LocationID { get; set; }
         public string Name { get; set; }
-        public Dictionary<Product, int> Inventory { get; set; } 
-        
+        public Dictionary<Product, int> Inventory { get; set; }
+
         public Location(string name, int locationID)
         {
             LocationID = locationID;
@@ -18,14 +18,14 @@ namespace StoreApp.Library
         }
         public void DecreaseInventory(Order order)
         {
-            if (order.OrderAccepted)
-            {
+         
+            
                 foreach(Product p in order.Products)
                 {
                     Inventory[p] -= 1;
                 }
                
-            }
+            
         }
 
         private Dictionary<Product, int> GenerateInventory()
@@ -42,5 +42,19 @@ namespace StoreApp.Library
             return inventory;
         }
 
+        public string GetProductNames()
+        {
+            //get the inventory product names
+            Dictionary<Product, int>.KeyCollection products = Inventory.Keys;
+            string productNames = "";
+            int count = 0;
+
+            foreach (Product p in products)
+            {
+                count++;
+                productNames += $"{count}. {p.Name}\n";
+            }
+            return productNames;
+        }
     }
 }

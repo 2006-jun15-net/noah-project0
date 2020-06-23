@@ -1,9 +1,4 @@
-﻿using Microsoft.VisualBasic.CompilerServices;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace StoreApp.Library
 {
@@ -23,6 +18,7 @@ namespace StoreApp.Library
         {
             FirstName = firstName;
             LastName = lastName;
+            OrderHistory = new List<Order>();
             CustomerID = customerIDSeed++;
 
         }

@@ -7,48 +7,69 @@ using System.Data.Common;
 using System.Dynamic;
 using System.IO;
 using System.Transactions;
+using System.Xml.Serialization;
 
 namespace StoreApp.App
 {
-    class Program
+    public class Program
     {
+
         static void Main(string[] args)
         {
-            List<Order> orderHistory = GetInitialData();
-            
-            
-            Customer customer;
-            
-            int selection = 1;
-
-            while (selection != 5)
+            Console.WriteLine("running");
+            List<Product> p = new List<Product>
             {
-                Console.WriteLine(GetMenu() + "\nPlease enter an option: ");
-                selection = Console.Read();
-                if (selection == 1 || selection == 2 || selection == 3 || selection == 4)
-                {
-                    switch(selection)
-                    {
-                        case 1:  //add a new customer
-                            customer = RegisterCustomer(orderHistory);
+                new Product("p1", 100),
+                new Product("p2", 100),
+                new Product("p3", 100)
 
-                            break;
-                        case 2: //place an order
-                            PlaceOrder(orderHistory);
-                        case 3://Search customers
+            };
 
-                        case 4://Print order history
+            Order o = new Order
+            {
+                Products = p
+            };
+            Customer c = new Customer("noah", "funtanilla");
+            c.OrderHistory.Add(o);
 
-                    }
-                }
-                else
-                {
-                    Console.WriteLine("Invalid Option. Please type 1-5");
-                }
-            }
+            //act
+            Program.GenerateOrderHistory(c.OrderHistory);
+            //List<Order> orderHistory = GetInitialData();
+
+
+            //Customer customer;
+
+            //int selection = 1;
+
+            //while (selection != 5)
+            //{
+            //    Console.WriteLine(GetMenu() + "\nPlease enter an option: ");
+            //    selection = Console.Read();
+            //    if (selection == 1 || selection == 2 || selection == 3 || selection == 4)
+            //    {
+            //        switch(selection)
+            //        {
+            //            case 1:  //add a new customer
+            //                customer = RegisterCustomer(orderHistory);
+
+            //                break;
+            //            case 2: //place an order
+
+            //                break;
+            //            case 3://Search customers
+            //                break;
+            //            case 4://Print order history
+            //                break;
+            //        }
+            //    }
+            //    else
+            //    {
+            //        Console.WriteLine("Invalid Option. Please type 1-5");
+            //    }
+            //}
             //Place orders to store locations for customers
 
-           
+
 
             //search customers by name
 
@@ -59,32 +80,6 @@ namespace StoreApp.App
             //display all order history of a customer
 
 
-        }
-
-        private static void PlaceOrder(List<Order> oh)
-        {
-            var currentLocation = SetLocation(oh);
-            if(currentLocation == null)
-            {
-                Console.WriteLine("No location was set. "
-                                + "Cannot place order without setting a location.");
-                return;
-            }
-            else
-            {
-                //get the inventory product names from the store location loc
-                Dictionary<Product, int>.KeyCollection products = currentLocation.Inventory.Keys;
-                string productNames = "";
-                int count = 0;
-                foreach (Product p in products)
-                {
-                    count++;
-                    productNames += $"{count}. {p.Name}\n";
-                }
-                string menu = "What would you like to add to your order?\n" + productNames;
-
-
-            }
         }
 
 
@@ -122,10 +117,13 @@ namespace StoreApp.App
                         {
                             case 1:
                                 currentLoc = loc1;
+                                break;
                             case 2:
                                 currentLoc = loc2;
+                                break;
                             case 3:
                                 currentLoc = loc3;
+                                break;
                         }
                         
                     }
@@ -175,10 +173,10 @@ namespace StoreApp.App
             //check to see if first and last name of each existing customer does not match new customer 
             foreach(var order in oh)
             {
-                if(fn == order.customer.FirstName && ln == order.customer.LastName)
+                if(fn == order.CurrentCustomer.FirstName && ln == order.CurrentCustomer.LastName)
                 {
                     Console.WriteLine("This name already exists.");
-                    return order.customer;
+                    return order.CurrentCustomer;
                 }
             }
            
@@ -195,23 +193,16 @@ namespace StoreApp.App
                         + "5. Quit";
         }
 
-        public static string GenerateOrderHistory(List<Order> OrderHistory)
+        public static void GenerateOrderHistory(List<Order> OrderHistory)
         {
             //Generate a new file and output the order history after converting to json format
-            string filePath = "../../../OrderHistory.json";
-            try
+            string filePath = "../../../../OrderHistory.json";
+            string data = ConvertToJson(OrderHistory);
+           
+            using (TextWriter tw = new StreamWriter(filePath))
             {
-                using (var fs = new FileStream(filePath, FileMode.Create))
-                {
-                    return ConvertToJson(OrderHistory);
-                }
-                
-            }
-            catch (IOException e)
-            {
-                Console.WriteLine($"Error writing file: {e.Message}");
-                return "";
-            }
+                tw.WriteLine(data);
+            };
             
         }
         public static List<Order> GetInitialData()
@@ -220,7 +211,7 @@ namespace StoreApp.App
             //but if none exists just return a null order history
             try
             {
-                string filePath = $"../../../OrderHistory.json";
+                string filePath = $"../../../../OrderHistory.json";
                 string initialData = File.ReadAllText(filePath);
                 return JsonConvert.DeserializeObject<List<Order>>(initialData);
                
@@ -233,10 +224,15 @@ namespace StoreApp.App
             
         }
 
-        public static string ConvertToJson(List<Order> OrderHistory)
+        public static string ConvertToJson<T>(List<T> ListToSerialize)
         {
+            string json = "";
             //This converts the list of orders to a json format to write to a file
-            return JsonConvert.SerializeObject(OrderHistory, Formatting.Indented);
+            foreach (T item in ListToSerialize)
+            {
+                json += JsonConvert.SerializeObject(item, Formatting.Indented);
+            }
+            return json;
         }
     }
 }

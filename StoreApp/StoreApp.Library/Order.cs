@@ -9,47 +9,40 @@ namespace StoreApp.Library
     {
         private static int orderIDSeed = 0;
 
-        private List<Product> _products;
-
+        private List<Product> _products = null;
+        
+        public List<Product> Products { get; set; }
         public int OrderID {get;}
         public Location StoreLocation { get; set;}
 
-        public Customer customer { get; }
+        public Customer CurrentCustomer { get; }
 
-        public bool OrderAccepted => false;
-
-        public string OrderDate 
-        {
-            get
-            {
-                if (OrderAccepted)
-                {
-                    return DateTime.Now.ToString("F");
-                }
-                else
-                {
-                    return "order failed";
-                }
-
-            }
-        }
-
-        public List<Product> Products 
-        { 
-            get => _products; 
-            set
-            {
-                if(value.Count > 100)
-                {
-                    throw new ArgumentOutOfRangeException(nameof(value), "Too many products in order.");
-                }
-                _products = value;
-            }
-        }
+        private string orderDate = "";
         
         public Order()
         {
             OrderID = orderIDSeed++;
+        }
+
+        public void AddToOrder(Product p)
+        {
+            if (_products.Count >= 100)
+            {
+                throw new ArgumentOutOfRangeException(nameof(_products), "Too many products in order.");
+            }
+            else
+            {
+                _products.Add(p);
+            }
+            
+        }
+
+        public void SubmitOrder(Location store)
+        {
+            StoreLocation = store;
+            orderDate = DateTime.Now.ToString("F");
+            CurrentCustomer.OrderHistory.Add(this);
+            
         }
 
     }

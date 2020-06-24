@@ -3,15 +3,15 @@
   <Order>
     <Products>
       <Product>
-        <Name>p1</Name>
+        <Name>x</Name>
         <Price>100</Price>
       </Product>
       <Product>
-        <Name>p2</Name>
+        <Name>y</Name>
         <Price>100</Price>
       </Product>
       <Product>
-        <Name>p3</Name>
+        <Name>z</Name>
         <Price>100</Price>
       </Product>
     </Products>
@@ -23,15 +23,15 @@
   <Order>
     <Products>
       <Product>
-        <Name>p1</Name>
+        <Name>x</Name>
         <Price>100</Price>
       </Product>
       <Product>
-        <Name>p2</Name>
+        <Name>y</Name>
         <Price>100</Price>
       </Product>
       <Product>
-        <Name>p3</Name>
+        <Name>z</Name>
         <Price>100</Price>
       </Product>
     </Products>

@@ -8,11 +8,18 @@ namespace StoreApp.Library.Repos
 {
     public class StoreRepo
     {
-        private readonly ICollection<Location> _stores;
+        private readonly List<Location> _stores;
 
-        public StoreRepo(ICollection<Location> stores)
+        public StoreRepo(List<Location> stores)
         {
             _stores = stores ?? throw new ArgumentNullException(nameof(stores));
+        }
+        public IEnumerable<Location> GetAllStores()
+        {
+            foreach(var item in _stores)
+            {
+                yield return item;
+            }
         }
 
         public Location GetStoreById(int id)
@@ -34,10 +41,15 @@ namespace StoreApp.Library.Repos
             DeleteStore(store.LocationID);
             AddStore(store);
         }
-        public int CheckInventory(int id)
+        public void CheckInventory(int id)
         {
             var storeToCheck = _stores.First(s => s.LocationID == id);
-
+            Dictionary<Product, int>.KeyCollection productsInStore = storeToCheck.Inventory.Keys;
+            Console.WriteLine($"Products in {storeToCheck.Name}:\n");
+            foreach(var p in productsInStore)
+            {
+                Console.WriteLine($"{storeToCheck.Inventory[p]} {p.Name}(s) left.\n");
+            }
         }
     }
 }

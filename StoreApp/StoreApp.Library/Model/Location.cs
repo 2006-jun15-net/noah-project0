@@ -9,24 +9,27 @@ using System.Xml.Serialization;
 namespace StoreApp.Library.Model
 {
     [DataContract]
+    [KnownType(typeof(Dictionary<Product, int>))]
     public class Location
     { 
-        public int? LocationID { get; set; }
+        [DataMember]
+        public int LocationID { get; set; }
+        [DataMember]
         public string Name { get; set; }
         [DataMember]
         public Dictionary<Product, int> Inventory { get; set; }
 
         public Location()
         {
-            LocationID = null;
-            Name = null;
-            Inventory = null;
+            LocationID = 0;
+            Name = " ";
+            Inventory = new Dictionary<Product, int>();
         }
-        public Location(string name, int locationID)
+        public Location(string name, int locationID, Dictionary<Product, int> inventory)
         {
             LocationID = locationID;
             Name = name;
-            Inventory = GenerateInventory();
+            Inventory = inventory;
         }
         public void DecreaseInventory(Order order)
         {
@@ -40,19 +43,7 @@ namespace StoreApp.Library.Model
             
         }
 
-        private List<Product> GenerateInventoryFile()
-        {
-            var serializer = new DataContractSerializer(typeof(Location));
-            
-            using (var writer = new XmlTextWriter(stream, "../../../../Inventories.xml"))
-            {
-                writer.Formatting = Formatting.Indented; // indent the Xml so it's human readable
-                serializer.WriteObject(writer, Inventory);
-                writer.Flush();
-                
-            }
-            
-        }
+       
 
     
     }

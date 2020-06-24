@@ -6,6 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
+using System.Security.Cryptography;
 using System.Xml.Serialization;
 
 namespace StoreApp.App
@@ -19,16 +21,16 @@ namespace StoreApp.App
             var dataList = new List<Order>();
             List<Product> p = new List<Product>
             {
-                new Product("p1", 100),
-                new Product("p2", 100),
-                new Product("p3", 100)
+                new Product("x", 100),
+                new Product("y", 100),
+                new Product("z", 100)
 
             };
             List<Product> p2 = new List<Product>
             {
-                new Product("p1", 100),
-                new Product("p2", 100),
-                new Product("p3", 100)
+                new Product("x", 100),
+                new Product("y", 100),
+                new Product("z", 100)
 
             };
             Customer c = new Customer("noah", "funtanilla");
@@ -46,15 +48,45 @@ namespace StoreApp.App
             dataList.Add(o2);
 
             OrderHistory oh = new OrderHistory(dataList);
-            
-            string filePath = "../../../../OrderHistory.xml";
 
+            List<Location> stores = new List<Location>
+            {
+                new Location
+                {
+                    Name = "store1",
+                    LocationID = 1,
+                    Inventory =
+                    {
+                        { new Product("a", 10.00), 100 },
+                        { new Product("b", 20.00), 200 },
+                        { new Product("c", 30.00), 300 }
+                    }
+                },
+                new Location
+                {
+                    Name = "store2",
+                    LocationID = 2,
+                    Inventory =
+                    {
+                        { new Product("e", 10.00), 100 },
+                        { new Product("f", 20.00), 200 },
+                        { new Product("g", 30.00), 300 }
+                    }
+                }
+            };
+            StoreRepo storeRepo = new StoreRepo(stores);
 
-            //act
-            GenerateOrderHistory(oh, filePath);
+            string orderHistoryPath = "../../../../OrderHistory.xml";
+            string storesDataPath = "../../../../StoresData.xml";
 
-            OrderHistory dataFromJson = GetInitialData(filePath); ;
-            Console.WriteLine(dataFromJson.GetOrderHistory().ToList()[0].Products[0].Name);
+         
+            GenerateOrderHistory(oh, orderHistoryPath);
+            GenerateStores(storeRepo, storesDataPath);
+
+            OrderHistory dataFromOrdersXml = GetInitialData(orderHistoryPath);
+            StoreRepo dataFromStoresXml = GetInitialStoreData(storesDataPath);
+            Console.WriteLine(dataFromOrdersXml.GetOrderHistory().ToList()[0].Products[0].Name);
+            dataFromStoresXml.CheckInventory(1);
             //List<Order> orderHistory = GetInitialData();
 
 
@@ -104,74 +136,6 @@ namespace StoreApp.App
         }
 
 
-        private static Location SetLocation(List<Order> oh)
-        {
-            //if the order histor is empty, initialize new location inventories
-            Location currentLoc = null;
-            Location loc1 = null;
-            Location loc2 = null;
-            Location loc3 = null;
-            if (oh == null)
-            {
-                loc1 = new Location("Store 1", 1);
-                loc2 = new Location("Store 2", 2);
-                loc3 = new Location("Store 3", 3);
-            }
-            
-            //create a menu to select which store 
-            string menu = "Select store location:\n"
-                        + "1. Store 1\n"
-                        + "2. Store 2\n"
-                        + "3. Store 3\n"
-                        + "4. Go back";
-
-            Console.WriteLine(menu);
-            int selection = Console.Read();
-            while (selection != 4)
-            {
-                if (selection == 1 || selection == 2 || selection == 3)
-                {   
-                    //if the order history is empty just use the previously initialized locations
-                    if (oh == null)
-                    {
-                        switch(selection)
-                        {
-                            case 1:
-                                currentLoc = loc1;
-                                break;
-                            case 2:
-                                currentLoc = loc2;
-                                break;
-                            case 3:
-                                currentLoc = loc3;
-                                break;
-                        }
-                        
-                    }
-                    //else check for an order in the order histor for a store ID that matches 
-                    //the user selection in and continue to update that store's inventory
-                    else
-                    {
-                        //foreach(var order in oh)
-                        //{
-                        //    if(order.StoreLocation.LocationID == selection)
-                        //    {
-                        //        currentLoc = order.StoreLocation;
-                        //        break;
-                        //    }
-                        //}
-                    }
-                }
-                else
-                {
-                    Console.WriteLine("Invalid Selection. Please type 1-4.");
-                }
-                Console.WriteLine(menu);
-                selection = Console.Read();
-            }
-            return currentLoc;
-        }
-
         private static Customer RegisterCustomer(List<Order> oh)
         {
             //Get first and last name of customer
@@ -216,7 +180,7 @@ namespace StoreApp.App
 
         public static void GenerateOrderHistory(OrderHistory oh, string filePath)
         {
-            //Generate a new file and output the order history after converting to json format
+            //Generate a new file and output the order history to xml format
             
             var serializer = new XmlSerializer(typeof(List<Order>));
 
@@ -241,13 +205,47 @@ namespace StoreApp.App
                 return new OrderHistory(oh);
 
             }
-            catch(FileNotFoundException)
+            catch (FileNotFoundException)
             {
                 Console.WriteLine("No data exists. Must first create a data file.");
                 return new OrderHistory(new List<Order>());
             }
-            
+
         }
+        public static void GenerateStores(StoreRepo allStores, string filePath)
+        {
+            var serializer = new DataContractSerializer(typeof(List<Location>));
+
+            using (FileStream stream = new FileStream(filePath, FileMode.Create))
+            {
+                serializer.WriteObject(stream, allStores.GetAllStores().ToList());
+            }
+
+        }
+        
+        public static StoreRepo GetInitialStoreData(string filePath)
+        {
+            List<Location> stores;
+            
+            var serializer = new DataContractSerializer(typeof(List<Location>));
+            //Try to read in a json file and assign it to a list of orders (aka an order history)
+            //but if none exists just return a null order history
+            try
+            {
+                using (var stream = new FileStream(filePath, FileMode.Open))
+                {
+                    stores = (List<Location>)serializer.ReadObject(stream);
+                }
+                return new StoreRepo(stores);
+
+            }
+            catch (FileNotFoundException)
+            {
+                Console.WriteLine("No data exists. Must first create a data file.");
+                return new StoreRepo(new List<Location>());
+            }
+        }
+        
 
         public static string ConvertToJson(Object obj)
         { 

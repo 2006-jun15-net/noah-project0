@@ -4,10 +4,10 @@ namespace StoreApp.Library.Model
 {
     public class Product
     {
-        private double? _price;
+        private double _price;
         public string Name { get; set; }
 
-        public double? Price
+        public double Price
         {
             get => _price;
             set
@@ -22,7 +22,7 @@ namespace StoreApp.Library.Model
         public Product()
         {
             Name = null;
-            Price = null;
+            Price = 0;
         }
 
         public Product(string name, double price)

@@ -17,124 +17,75 @@ namespace StoreApp.App
 
         static void Main(string[] args)
         {
-            Console.WriteLine("running");
-            var dataList = new List<Order>();
-            List<Product> p = new List<Product>
+            //Get Home Menu
+            char selection = GetHomeMenu();
+            while(selection != 'q')
             {
-                new Product("x", 100),
-                new Product("y", 100),
-                new Product("z", 100)
-
-            };
-            List<Product> p2 = new List<Product>
-            {
-                new Product("x", 100),
-                new Product("y", 100),
-                new Product("z", 100)
-
-            };
-            Customer c = new Customer("noah", "funtanilla");
-            Order o = new Order
-            {
-                Products = p,
-                CurrentCustomer = c
-            };
-            Order o2 = new Order
-            {
-                Products = p2,
-                CurrentCustomer = c
-            };
-            dataList.Add(o);
-            dataList.Add(o2);
-
-            OrderHistory oh = new OrderHistory(dataList);
-
-            List<Location> stores = new List<Location>
-            {
-                new Location
+                if(selection != 'a' || selection != 'r' || selection != 'p' || selection != 'g' || selection != 'l' || selection != 'q' )
                 {
-                    Name = "store1",
-                    LocationID = 1,
-                    Inventory =
-                    {
-                        { new Product("a", 10.00), 100 },
-                        { new Product("b", 20.00), 200 },
-                        { new Product("c", 30.00), 300 }
-                    }
-                },
-                new Location
+                    Console.WriteLine("Invalid Input. Please type a, r, p, g, l, or q.");
+                    selection = GetHomeMenu();
+                }
+                else
                 {
-                    Name = "store2",
-                    LocationID = 2,
-                    Inventory =
+                    switch(selection)
                     {
-                        { new Product("e", 10.00), 100 },
-                        { new Product("f", 20.00), 200 },
-                        { new Product("g", 30.00), 300 }
+                        case 'a':
+                            //Go to a menu that steps you through creating a new store
+                            CreateStoreMenu();
+                            break;
+                        case 'r':
+                            //Register a new customers
+
+                            break;
+                        case 'p':
+                            //Place an order
+
+                            break;
+                        case 'g':
+                            //Get info and display it to the user
+
+                            break;
+                        case 'l':
+                            //Load existing data
+
+                            break;
+
                     }
                 }
-            };
-            StoreRepo storeRepo = new StoreRepo(stores);
-
-            string orderHistoryPath = "../../../../OrderHistory.xml";
-            string storesDataPath = "../../../../StoresData.xml";
-
-         
-            GenerateOrderHistory(oh, orderHistoryPath);
-            GenerateStores(storeRepo, storesDataPath);
-
-            OrderHistory dataFromOrdersXml = GetInitialData(orderHistoryPath);
-            StoreRepo dataFromStoresXml = GetInitialStoreData(storesDataPath);
-            Console.WriteLine(dataFromOrdersXml.GetOrderHistory().ToList()[0].Products[0].Name);
-            dataFromStoresXml.CheckInventory(1);
-            //List<Order> orderHistory = GetInitialData();
-
-
-            //Customer customer;
-
-            //int selection = 1;
-
-            //while (selection != 5)
-            //{
-            //    Console.WriteLine(GetMenu() + "\nPlease enter an option: ");
-            //    selection = Console.Read();
-            //    if (selection == 1 || selection == 2 || selection == 3 || selection == 4)
-            //    {
-            //        switch(selection)
-            //        {
-            //            case 1:  //add a new customer
-            //                customer = RegisterCustomer(orderHistory);
-
-            //                break;
-            //            case 2: //place an order
-
-            //                break;
-            //            case 3://Search customers
-            //                break;
-            //            case 4://Print order history
-            //                break;
-            //        }
-            //    }
-            //    else
-            //    {
-            //        Console.WriteLine("Invalid Option. Please type 1-5");
-            //    }
-            //}
-            //Place orders to store locations for customers
-
-
-
-            //search customers by name
-
-            //display details of an order
-
-            //display all order history of a store location
-
-            //display all order history of a customer
+            }
 
 
         }
 
+        private static void CreateStoreMenu()
+        {
+            string storeMenu =
+                "Create a new store:\n" +
+                "";
+        }
+
+        private static char GetHomeMenu()
+        {
+            //Menu options include: 
+            //  1. Create new store
+            //  2. Register new customers
+            //  3. Place orders
+            //  4. Display current status, e.g. inventory, customer info, etc.
+            //  5. load data
+            
+            string homeMenu =
+                "Home Menu:\n" +
+                "a. Add a new store\n" +
+                "r. Register as a new Customer\n" +
+                "p. Place an order\n" +
+                "g. Get info (order history, store inventories, etc.)\n" +
+                "l. Load existing store and/or order history\n" +
+                "q. quit\n";
+            Console.WriteLine(homeMenu);
+            return Char.Parse(Console.ReadLine());
+           
+        }
 
         private static Customer RegisterCustomer(List<Order> oh)
         {

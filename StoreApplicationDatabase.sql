@@ -1,0 +1,34 @@
+--DROP TABLE Customers
+CREATE TABLE Customers(
+	CustomerId INT IDENTITY(1,1) NOT NULL,
+	FirstName NVARCHAR(255) NOT NULL,
+	LastName NVARCHAR(255) NOT NULL,
+	PRIMARY KEY(CustomerId)
+);
+--DROP TABLE Orders
+CREATE TABLE Orders(
+	OrderId INT IDENTITY(1,1) NOT NULL,
+	OrderDate DATETIME2 DEFAULT SYSUTCDATETIME(),
+	CustomerId INT NOT NULL
+	PRIMARY KEY(OrderId)
+);
+--DROP TABLE Stores
+CREATE TABLE Stores(
+	StoreId INT IDENTITY(1,1) NOT NULL,
+	OrderId INT NOT NULL,
+	Inventory INT CHECK(Inventory > 0)
+	PRIMARY KEY(StoreId)
+);
+--DROP TABLE Products
+CREATE TABLE Products(
+	ProductId UNIQUEIDENTIFIER NOT NULL DEFAULT NEWID(),
+	ProductName NVARCHAR(255) NOT NULL,
+	Price MONEY NOT NULL,
+	PRIMARY KEY(ProductId)
+);
+--DROP TABLE ProductsOfOrders
+CREATE TABLE ProductsOfOrders(
+	OrderId INT NOT NULL,
+	ProductId UNIQUEIDENTIFIER NOT NULL,
+	CONSTRAINT PK_ProductsOfOrder_OrderId_ProductId PRIMARY KEY(OrderId, ProductId)
+);

@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
@@ -21,10 +22,11 @@ namespace StoreApp.App
             //Get Home Menu
             StoreRepo sr = new StoreRepo(new List<Location>());
             string storeDataPath = "../../../../StoreRepo.xml";
-            char selection = GetHomeMenu();
+            char selection = 'a'; 
             while(selection != 'q')
             {
-                if(selection != 'a' && selection != 'r' && selection != 'p' && selection != 'g' && selection != 'l' && selection != 'q' )
+                selection = = GetHomeMenu(); 
+                if (selection != 'a' && selection != 'r' && selection != 'p' && selection != 'g' && selection != 'l' && selection != 'q' )
                 {
                     Console.WriteLine("Invalid Input. Please type a, r, p, g, l, or q.");
                     selection = GetHomeMenu();
@@ -62,7 +64,11 @@ namespace StoreApp.App
 
                                             break;
                                         case 'e':
-
+                                            if(sr.GetAllStores().Any())
+                                            {
+                                                List<Location> stores = sr.GetAllStores().ToList();
+                                                EditStoreMenu(stores);
+                                            }
                                             break;
                                         case 'd':
 
@@ -97,10 +103,35 @@ namespace StoreApp.App
 
         }
 
+        private static void EditStoreMenu(List<Location> stores)
+        {
+            string listStores = "Stores:\n";
+            foreach(var store in stores)
+            {
+                listStores += "Name: " + store.Name + " " + "Store ID: " + store.LocationID + "\n";
+            }
+            Console.WriteLine("Which store do you want to edit(type Location ID: ");
+            int input = Int32.Parse(Console.ReadLine());
+            if (stores.Any(s => s.LocationID == input))
+            {
+                Console.WriteLine("Enter new name: ");
+                stores.First(s => s.LocationID == input).Name = Console.ReadLine();
+                Console.WriteLine("Name was changed.");
+                Console.WriteLine("Change inventory? (y for yes, any key for no)");
+                char choice = Char.ToLower(Char.Parse(Console.ReadLine()));
+                if(choice == 'y')
+                {
+
+                }
+            }
+
+
+        }
+
         private static Location CreateNewStore()
         {
             Dictionary<Product, int> inventory = new Dictionary<Product, int>();
-            Console.WriteLine("Enter store name: ");
+            Console.WriteLine("Enter new store name: ");
             string storeName = Console.ReadLine();
             char input = 'a';
             while (input != 'f')
@@ -118,7 +149,7 @@ namespace StoreApp.App
                         case 'a':
                             try
                             {
-                                Product p = CreateNewProduct(inventory);
+                                Product p = CreateNewProduct();
                                 Console.WriteLine("Enter quantity of products: ");
                                 int qty = Int32.Parse(Console.ReadLine());
                                 inventory.Add(p, qty);
@@ -179,7 +210,7 @@ namespace StoreApp.App
             return new Location(storeName, inventory);
         }
 
-        private static Product CreateNewProduct(in Dictionary<Product, int> inv)
+        private static Product CreateNewProduct()
         {
             Console.WriteLine("Enter product name: ");
             string pName = Console.ReadLine();

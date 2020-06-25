@@ -31,7 +31,7 @@ namespace StoreApp.Library.Repos
         {
             _stores.Add(store);
         }
-        public void DeleteStore(int? id)
+        public void DeleteStore(int id)
         {
             _stores.Remove(_stores.First(s => s.LocationID == id));
                

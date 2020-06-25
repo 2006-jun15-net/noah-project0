@@ -7,7 +7,7 @@ namespace StoreApp.Library.Model
 {
     public class Order
     {
-        private static int orderIDSeed = 0;
+        private static int orderIDSeed = 1;
 
         private List<Product> _products = null;
         
@@ -20,7 +20,8 @@ namespace StoreApp.Library.Model
         
         public Order()
         {
-            OrderID = orderIDSeed++;
+            OrderID = orderIDSeed;
+            orderIDSeed++;
         }
 
         public void AddToOrder(Product p)

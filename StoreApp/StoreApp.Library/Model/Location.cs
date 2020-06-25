@@ -11,7 +11,9 @@ namespace StoreApp.Library.Model
     [DataContract]
     [KnownType(typeof(Dictionary<Product, int>))]
     public class Location
-    { 
+    {
+        [DataMember]
+        private static int _locationIDSeed = 1;
         [DataMember]
         public int LocationID { get; set; }
         [DataMember]
@@ -25,9 +27,10 @@ namespace StoreApp.Library.Model
             Name = " ";
             Inventory = new Dictionary<Product, int>();
         }
-        public Location(string name, int locationID, Dictionary<Product, int> inventory)
+        public Location(string name, Dictionary<Product, int> inventory)
         {
-            LocationID = locationID;
+            LocationID = _locationIDSeed;
+            _locationIDSeed++;
             Name = name;
             Inventory = inventory;
         }

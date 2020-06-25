@@ -5,7 +5,7 @@ namespace StoreApp.Library.Model
 {
     public class Customer
     {
-        private static int customerIDSeed = 0;
+        private static int customerIDSeed = 1;
 
         public int CustomerID { get; }
 
@@ -15,6 +15,7 @@ namespace StoreApp.Library.Model
 
         public Customer()
         {
+            CustomerID = 0;
             FirstName = null;
             LastName = null;
         }
@@ -23,7 +24,8 @@ namespace StoreApp.Library.Model
         {
             FirstName = firstName;
             LastName = lastName;
-            CustomerID = customerIDSeed++;
+            CustomerID = customerIDSeed;
+            customerIDSeed++;
 
         }
 

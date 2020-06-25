@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
 using System.Xml.Serialization;
 
 namespace StoreApp.App
@@ -18,10 +19,12 @@ namespace StoreApp.App
         static void Main(string[] args)
         {
             //Get Home Menu
+            StoreRepo sr = new StoreRepo(new List<Location>());
+            string storeDataPath = "../../../../StoreRepo.xml";
             char selection = GetHomeMenu();
             while(selection != 'q')
             {
-                if(selection != 'a' || selection != 'r' || selection != 'p' || selection != 'g' || selection != 'l' || selection != 'q' )
+                if(selection != 'a' && selection != 'r' && selection != 'p' && selection != 'g' && selection != 'l' && selection != 'q' )
                 {
                     Console.WriteLine("Invalid Input. Please type a, r, p, g, l, or q.");
                     selection = GetHomeMenu();
@@ -32,7 +35,43 @@ namespace StoreApp.App
                     {
                         case 'a':
                             //Go to a menu that steps you through creating a new store
-                            CreateStoreMenu();
+                            string storeSetup =
+                                "Store Setup:\n" +
+                                "a: add new store\n" +
+                                "e: edit existing store\n" +
+                                "d: delete existing store\n" +
+                                "b: go back\n";
+                            Console.WriteLine(storeSetup);
+                            char input = Char.ToLower(Char.Parse(Console.ReadLine()));
+                            while(input != 'b')
+                            {
+                                if(input != 'a' && input != 'e' && input != 'd')
+                                {
+                                    Console.WriteLine("Invalid Input. Please type a, e, d, or b.");
+                                    input = Char.ToLower(Char.Parse(Console.ReadLine()));
+                                }
+                                else
+                                {
+                                    switch(input)
+                                    {
+                                        case 'a':
+                                            Location newStore = CreateNewStore();
+                                            sr.AddStore(newStore);
+                                            GenerateStores(sr, storeDataPath);
+                                            Console.WriteLine("New store added to Store Repository!");
+
+                                            break;
+                                        case 'e':
+
+                                            break;
+                                        case 'd':
+
+                                            break;
+
+                                    }
+                                }
+                            }
+                            
                             break;
                         case 'r':
                             //Register a new customers
@@ -58,11 +97,114 @@ namespace StoreApp.App
 
         }
 
-        private static void CreateStoreMenu()
+        private static Location CreateNewStore()
         {
-            string storeMenu =
-                "Create a new store:\n" +
-                "";
+            Dictionary<Product, int> inventory = new Dictionary<Product, int>();
+            Console.WriteLine("Enter store name: ");
+            string storeName = Console.ReadLine();
+            char input = 'a';
+            while (input != 'f')
+            {
+                 input = ProductSetupMenu();
+                if (input != 'a' && input != 'e' && input != 'f')
+                {
+                    Console.WriteLine("Invalid Input. Please type a, e, or f.");
+                    input = ProductSetupMenu();
+                }
+                else
+                {
+                    switch(input)
+                    {
+                        case 'a':
+                            try
+                            {
+                                Product p = CreateNewProduct(inventory);
+                                Console.WriteLine("Enter quantity of products: ");
+                                int qty = Int32.Parse(Console.ReadLine());
+                                inventory.Add(p, qty);
+                                Console.WriteLine("Product Created!");
+                                Console.WriteLine();
+                                
+                            }
+                            catch(ArgumentException ae)
+                            {
+                                Console.WriteLine(ae.Message);
+                            }
+                            
+                            break;
+
+                        case 'e':
+                            Console.WriteLine("Enter product name you want to change:");
+                            string name = Console.ReadLine();
+                            char choice;
+                            if (inventory.Keys.Any(p => p.Name == name))
+                            {
+                                Product p = inventory.Keys.First(p => p.Name == name);
+                                Console.WriteLine("Change product name (press y for yes, press any key for no): ");
+                                choice = Char.ToLower(Char.Parse(Console.ReadLine()));
+                                if(choice == 'y')
+                                {
+                                    Console.WriteLine("Enter new name:");
+                                    p.Name = Console.ReadLine();
+                                    Console.WriteLine($"Name was changed to {p.Name}.");
+                                }
+                                else { Console.WriteLine("Name was not changed."); }
+                                Console.WriteLine("Change Price?(y for yes, any key for no):");
+                                choice = Char.ToLower(Char.Parse(Console.ReadLine()));
+                                if (choice == 'y')
+                                {
+                                    Console.WriteLine("Enter Price:");
+                                    p.Price = Int32.Parse(Console.ReadLine());
+                                    Console.WriteLine($"Price was changed to {p.Price}.");
+                                }
+                                else { Console.WriteLine("Price was not changed"); }
+                                Console.WriteLine("Enter quantity of products:");
+                                int qty = Int32.Parse(Console.ReadLine());
+
+                                inventory.Remove(p);
+                                inventory.Add(p, qty);
+                                
+                            }
+                            else
+                            {
+                                Console.WriteLine($"Product with name, {name} doesn't exist.");
+                            }
+                            
+                            break;
+                    }
+                }
+                
+                
+            }
+            return new Location(storeName, inventory);
+        }
+
+        private static Product CreateNewProduct(in Dictionary<Product, int> inv)
+        {
+            Console.WriteLine("Enter product name: ");
+            string pName = Console.ReadLine();
+            if (inv.Keys.Any(p => p.Name == pName))
+            {
+                throw new ArgumentException($"Product Name:{pName} already exists.");
+            }
+            Console.WriteLine("Enter price for the product: ");
+            double price = Double.Parse(Console.ReadLine());
+            return new Product(pName, price);
+            
+        }
+
+        private static char ProductSetupMenu()
+        {
+            string productSetup =
+                "What does the store sell?\n" +
+                "a: add new product\n" +
+                "e: edit products\n" +
+                "f: finish";
+            Console.WriteLine(productSetup);
+            
+            Console.WriteLine("Enter choice: ");
+            char choice = Char.ToLower(Char.Parse(Console.ReadLine()));
+            return choice;
         }
 
         private static char GetHomeMenu()
@@ -83,7 +225,7 @@ namespace StoreApp.App
                 "l. Load existing store and/or order history\n" +
                 "q. quit\n";
             Console.WriteLine(homeMenu);
-            return Char.Parse(Console.ReadLine());
+            return Char.ToLower(Char.Parse(Console.ReadLine()));
            
         }
 

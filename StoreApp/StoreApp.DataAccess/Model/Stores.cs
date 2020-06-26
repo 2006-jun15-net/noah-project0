@@ -12,6 +12,7 @@ namespace StoreApp.DataAccess.Model
 
         public int StoreId { get; set; }
         public int OrderId { get; set; }
+        public string StoreName { get; set; }
 
         public virtual Orders Order { get; set; }
         public virtual ICollection<ProductsInStores> ProductsInStores { get; set; }

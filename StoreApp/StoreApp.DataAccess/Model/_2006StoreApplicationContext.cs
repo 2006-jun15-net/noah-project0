@@ -27,7 +27,7 @@ namespace StoreApp.DataAccess.Model
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Server=tcp:2006noahfuntanilla.database.windows.net,1433;Initial Catalog=2006StoreApplication;Persist Security Info=False;User ID=nfuntanilla;Password=nFunAzure1;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
+                optionsBuilder.UseSqlServer("Server=tcp:2006noahfuntanilla.database.windows.net,1433;Initial Catalog=2006StoreApplication;Persist Security Info=False;User ID=nfuntanilla;Password=nFunAzure2;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
             }
         }
 
@@ -36,7 +36,7 @@ namespace StoreApp.DataAccess.Model
             modelBuilder.Entity<Customers>(entity =>
             {
                 entity.HasKey(e => e.CustomerId)
-                    .HasName("PK__Customer__A4AE64D88B25FA17");
+                    .HasName("PK__Customer__A4AE64D87D2F50C2");
 
                 entity.Property(e => e.FirstName)
                     .IsRequired()
@@ -50,9 +50,13 @@ namespace StoreApp.DataAccess.Model
             modelBuilder.Entity<Orders>(entity =>
             {
                 entity.HasKey(e => e.OrderId)
-                    .HasName("PK__Orders__C3905BCFCB277E0B");
+                    .HasName("PK__Orders__C3905BCFA1D54064");
+
+                entity.Property(e => e.Amount).HasDefaultValueSql("((1))");
 
                 entity.Property(e => e.OrderDate).HasDefaultValueSql("(sysutcdatetime())");
+
+                entity.Property(e => e.TotalCost).HasColumnType("money");
 
                 entity.HasOne(d => d.Customer)
                     .WithMany(p => p.Orders)
@@ -63,7 +67,7 @@ namespace StoreApp.DataAccess.Model
             modelBuilder.Entity<Products>(entity =>
             {
                 entity.HasKey(e => e.ProductId)
-                    .HasName("PK__Products__B40CC6CD4E31DBD9");
+                    .HasName("PK__Products__B40CC6CD3FB72A7A");
 
                 entity.Property(e => e.ProductId).HasDefaultValueSql("(newid())");
 
@@ -109,7 +113,11 @@ namespace StoreApp.DataAccess.Model
             modelBuilder.Entity<Stores>(entity =>
             {
                 entity.HasKey(e => e.StoreId)
-                    .HasName("PK__Stores__3B82F101BBDD1620");
+                    .HasName("PK__Stores__3B82F101502F3630");
+
+                entity.Property(e => e.StoreName)
+                    .IsRequired()
+                    .HasMaxLength(255);
 
                 entity.HasOne(d => d.Order)
                     .WithMany(p => p.Stores)

@@ -1,23 +1,30 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using StoreApp.DataAccess.Model;
+using StoreApp.DataAccess.Repos;
+using StoreApp.Library.Model;
 
 namespace StoreApp.App
 {
     public class Program
     {
-        public static readonly ILoggerFactory MyLoggerFactory
-            = LoggerFactory.Create(builder => { builder.AddConsole(); });
-
-        public static readonly DbContextOptions<_2006StoreApplicationContext> Options = new DbContextOptionsBuilder<_2006StoreApplicationContext>()
-            .UseLoggerFactory(MyLoggerFactory)
-            .UseSqlServer(SecretConfiguration.connectionString)
-            .Options;
-
-
         static void Main(string[] args)
         {
+            CustomerController cr = new CustomerController();
+            OrderController oh = new OrderController();
+            ProductController pr = new ProductController();
+            StoreController sr = new StoreController();
+            
             //Register Customers
+            
+            string fn = "testfn";
+            string ln = "testln";
+            Customer newCust = new Customer {FirstName = fn, LastName = ln };
+          
+            cr.DisplayCustomers();
+            cr.DisplayCustomers(1);
+
+
 
             //Add Stores
 

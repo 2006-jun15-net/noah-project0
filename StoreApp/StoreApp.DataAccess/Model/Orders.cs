@@ -7,8 +7,7 @@ namespace StoreApp.DataAccess.Model
     {
         public Orders()
         {
-            ProductsOfOrders = new HashSet<ProductsOfOrders>();
-            Stores = new HashSet<Stores>();
+            OrderLines = new HashSet<OrderLines>();
         }
 
         public int OrderId { get; set; }
@@ -16,9 +15,10 @@ namespace StoreApp.DataAccess.Model
         public int? Amount { get; set; }
         public decimal TotalCost { get; set; }
         public int CustomerId { get; set; }
+        public int StoreId { get; set; }
 
         public virtual Customers Customer { get; set; }
-        public virtual ICollection<ProductsOfOrders> ProductsOfOrders { get; set; }
-        public virtual ICollection<Stores> Stores { get; set; }
+        public virtual Stores Store { get; set; }
+        public virtual ICollection<OrderLines> OrderLines { get; set; }
     }
 }

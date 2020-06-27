@@ -3,7 +3,14 @@ CREATE TABLE Customers(
 	CustomerId INT IDENTITY(1,1) NOT NULL,
 	FirstName NVARCHAR(255) NOT NULL,
 	LastName NVARCHAR(255) NOT NULL,
+	UserName NVARCHAR(255) UNIQUE NOT NULL,
 	PRIMARY KEY(CustomerId)
+);
+
+CREATE TABLE Stores(
+	StoreId INT IDENTITY(1,1) NOT NULL,
+	StoreName NVARCHAR(255) NOT NULL,
+	PRIMARY KEY(StoreId),
 );
 
 CREATE TABLE Orders(
@@ -11,46 +18,43 @@ CREATE TABLE Orders(
 	OrderDate DATETIME2 DEFAULT SYSUTCDATETIME(),
 	Amount INT DEFAULT 1 CHECK(Amount > 0),
 	TotalCost MONEY NOT NULL CHECK(TotalCost > 0),
-	CustomerId INT NOT NULL
-	PRIMARY KEY(OrderId)
-	CONSTRAINT FK_Orders_CustomerId FOREIGN KEY(CustomerId) REFERENCES Customers (CustomerId) ON DELETE CASCADE
+	CustomerId INT NOT NULL,
+	StoreId INT NOT NULL,
+	PRIMARY KEY(OrderId),
+	CONSTRAINT FK_Orders_Customers_CustomerId FOREIGN KEY(CustomerId) REFERENCES Customers (CustomerId) ON DELETE CASCADE,
+	CONSTRAINT FK_Orders_Stores_StoreId FOREIGN KEY(StoreId) REFERENCES Stores (StoreId)
 );
 
-CREATE TABLE Stores(
-	StoreId INT IDENTITY(1,1) NOT NULL,
-	OrderId INT NOT NULL,
-	StoreName NVARCHAR(255) NOT NULL,
-	PRIMARY KEY(StoreId),
-	CONSTRAINT FK_Stores_OrderId FOREIGN KEY(OrderId) REFERENCES Orders (OrderId)
-);
+
 
 CREATE TABLE Products(
-	ProductId UNIQUEIDENTIFIER NOT NULL DEFAULT NEWID(),
+	ProductId INT IDENTITY(1,1) NOT NULL,
 	ProductName NVARCHAR(255) NOT NULL,
 	Price MONEY NOT NULL CHECK(Price > 0),
 	PRIMARY KEY(ProductId)
 );
 
-CREATE TABLE ProductsOfOrders(
+CREATE TABLE OrderLines(
 	OrderId INT NOT NULL,
-	ProductId UNIQUEIDENTIFIER NOT NULL,
-	CONSTRAINT PK_ProductsOfOrder_OrderId_ProductId PRIMARY KEY(OrderId, ProductId),
-	CONSTRAINT FK_PofO_Products_ProductId FOREIGN KEY(ProductId) REFERENCES Products (ProductId) ON DELETE CASCADE,
-	CONSTRAINT FK_PofO_Orders_OrderId FOREIGN KEY(OrderId) REFERENCES Orders (OrderId) ON DELETE CASCADE
+	ProductId INT NOT NULL,
+	CONSTRAINT PK_OrderLines_OrderId_ProductId PRIMARY KEY(OrderId, ProductId),
+	CONSTRAINT FK_OrderLines_Products_ProductId FOREIGN KEY(ProductId) REFERENCES Products (ProductId) ON DELETE CASCADE,
+	CONSTRAINT FK_OrderLines_Orders_OrderId FOREIGN KEY(OrderId) REFERENCES Orders (OrderId) ON DELETE CASCADE
 );
 
-CREATE TABLE ProductsInStores(
+CREATE TABLE Inventory(
 	StoreId INT NOT NULL,
-	ProductId UNIQUEIDENTIFIER NOT NULL,
-	Inventory INT NOT NULL CHECK(Inventory > 0),
-	CONSTRAINT PK_ProductsInStores_StoreId_ProductId PRIMARY KEY(StoreId, ProductId),
-	CONSTRAINT FK_PinS_Stores_StoreId FOREIGN KEY(StoreId) REFERENCES Stores (StoreId) ON DELETE CASCADE,
-	CONSTRAINT FK_PinS_Products_ProductId FOREIGN KEY(ProductId) REFERENCES Products (ProductId) ON DELETE CASCADE
+	ProductId INT NOT NULL,
+	Amount INT NOT NULL CHECK(Amount > 0),
+	CONSTRAINT PK_Inventory_StoreId_ProductId PRIMARY KEY(StoreId, ProductId),
+	CONSTRAINT FK_Inventory_Stores_StoreId FOREIGN KEY(StoreId) REFERENCES Stores (StoreId) ON DELETE CASCADE,
+	CONSTRAINT FK_Inventory_Products_ProductId FOREIGN KEY(ProductId) REFERENCES Products (ProductId) ON DELETE CASCADE
 );
 
 --DROP TABLE Customers
 --DROP TABLE Orders
 --DROP TABLE Stores
 --DROP TABLE Products
---DROP TABLE ProductsOfOrders
---DROP TABLE ProductsInStores
+--DROP TABLE OrderLines
+--DROP TABLE Inventory
+

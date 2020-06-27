@@ -32,7 +32,7 @@ namespace StoreApp.DataAccess.Repos
         }
         public IEnumerable<T> GetAll()
         {
-            return table.ToList();
+            return table;
         }
         public T GetById(object id)
         {

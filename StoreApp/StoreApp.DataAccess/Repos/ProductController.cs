@@ -1,19 +1,31 @@
-﻿using StoreApp.Library.Interfaces;
+﻿using StoreApp.DataAccess.Model;
+using StoreApp.Library.Interfaces;
 using StoreApp.Library.Model;
+using System;
+using System.Linq;
 
 namespace StoreApp.DataAccess.Repos
 {
     public class ProductController
     {
-        public readonly IRepository<Product> repository = null;
+        public readonly IRepository<Products> repository = null;
 
         public ProductController()
         {
-            repository = new GenericRepository<Product>();
+            repository = new GenericRepository<Products>();
         }
-        public ProductController(IRepository<Product> repo)
+        public ProductController(IRepository<Products> repo)
         {
             repository = repo;
+        }
+
+        public void DisplayProducts()
+        {
+            Console.WriteLine("List of Products:\n");
+            foreach(var p in repository.GetAll().ToList())
+            {
+                Console.WriteLine($"Product Name: {p.ProductName} ID: {p.ProductId}\n");
+            }
         }
     }
 }

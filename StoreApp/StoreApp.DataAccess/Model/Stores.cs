@@ -7,14 +7,14 @@ namespace StoreApp.DataAccess.Model
     {
         public Stores()
         {
-            ProductsInStores = new HashSet<ProductsInStores>();
+            Inventory = new HashSet<Inventory>();
+            Orders = new HashSet<Orders>();
         }
 
         public int StoreId { get; set; }
-        public int OrderId { get; set; }
         public string StoreName { get; set; }
 
-        public virtual Orders Order { get; set; }
-        public virtual ICollection<ProductsInStores> ProductsInStores { get; set; }
+        public virtual ICollection<Inventory> Inventory { get; set; }
+        public virtual ICollection<Orders> Orders { get; set; }
     }
 }

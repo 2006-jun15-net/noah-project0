@@ -13,7 +13,7 @@ namespace StoreApp.Test
         public void AddShouldAddCustomer()
         {
             //arrange
-            Customer c = new Customer();
+            Customers c = new Customers();
             c.FirstName = "TestFirst";
             c.LastName = "TestLast";
 

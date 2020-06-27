@@ -21,14 +21,11 @@ namespace StoreApp.DataAccess.Repos
         
         public void DisplayCustomers()
         {
+            Console.WriteLine("List of Customers:");
             foreach(var c in repository.GetAll().ToList())
             {
-                Console.WriteLine($"{c.FirstName} {c.LastName} ID: {c.CustomerId}\n");
+                Console.WriteLine($"Username: {c.UserName} ID: {c.CustomerId}\n");
             }
-        }
-        public void DisplayCustomers(int id)
-        {
-            
         }
 
       

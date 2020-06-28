@@ -14,7 +14,7 @@ namespace StoreApp.DataAccess.Repos
             = LoggerFactory.Create(builder => { builder.AddConsole(); });
 
         public static readonly DbContextOptions<_2006StoreApplicationContext> Options = new DbContextOptionsBuilder<_2006StoreApplicationContext>()
-            .UseLoggerFactory(MyLoggerFactory)
+            //.UseLoggerFactory(MyLoggerFactory)
             .UseSqlServer(SecretConfiguration.ConnectionString)
             .Options;
 
@@ -51,5 +51,6 @@ namespace StoreApp.DataAccess.Repos
         {
             _context.SaveChanges();
         }
+        
     }
 }

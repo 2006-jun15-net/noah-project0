@@ -18,22 +18,143 @@ namespace StoreApp.App
             OrderController oc = new OrderController();
             ProductController pc = new ProductController();
             StoreController sc = new StoreController();
-            Customers currentCustomer;
-            //Register Customers
-            currentCustomer = RegisterCustomer(cc);
+            Customers currentCustomer = null;
+
+            bool quit = false;
+            Console.WriteLine("Welcome to the Store Application");
+            string homeMenu =
+                "What would you like to do:\n" +
+                "1: Register as a new customer or sign in\n" +
+                "2: Create new store\n" +
+                "3: Create new product\n" +
+                "4: Add products to a store\n" +
+                "5. Place an order" +
+                "6: Search for customer by username\n" +
+                "7: Display details of an order\n" +
+                "8: Display order history of a customer\n" +
+                "9: Display order history of a store\n" +
+                "10: Delete store\n" +
+                "11: Unregister Customer\n" +
+                "0: Quit";
+            
+
+            while(!quit)
+            {
+                Console.WriteLine(homeMenu);
+                Console.WriteLine("Enter your selection(0-9):");
+                int input = Int32.Parse(Console.ReadLine());
+                if (input != 0 && input != 1 && input != 2 && input != 3 && input != 4 && input != 5 
+                    && input != 6 && input != 7 && input != 8 && input != 9 && input != 10 && input != 11)
+                {
+                    Console.WriteLine("Invalid input. Please enter 0-9.");
+                    input = Int32.Parse(Console.ReadLine());
+                }
+                
+
+                switch(input)
+                {
+                    case 1:
+                        //Register Customers
+                        currentCustomer = RegisterCustomer(cc);
+                        break;
+                    case 2:
+                        //Add Stores
+                        BuildStore(sc);
+                        break;
+                    case 3:
+                        //Add Products
+                        BuildProducts(pc);
+                        break;
+                    case 4:
+                        //Add Products to Stores
+                        AddProductToStore(pc, sc);
+                        break;
+                    case 5:
+                        //Place an order
+                        if(currentCustomer == null)
+                        {
+                            Console.WriteLine("You must register or sign in first.");
+                        }
+                        else
+                        {
+                            PlaceOrder(currentCustomer, sc, pc, oc);
+                        }
+                        break;
+                    case 6:
+                        //Search customers by username
+                        Console.WriteLine("Enter username to search:");
+                        string username = Console.ReadLine();
+                        cc.SearchCustomerByUsername(username);
+                        break;
+                    case 7:
+                        //Get order details for a particular order
+                        Console.WriteLine("Select the order you want details for:");
+                        oc.DisplayOrders();
+                        Console.WriteLine("Enter the Order ID to get details: ");
+                        int oid = Int32.Parse(Console.ReadLine());
+                        oc.DisplayOrderDetails(oid);
+                        break;
+                    case 8:
+                        //Check current customer order history
+                        if (currentCustomer == null)
+                        {
+                            Console.WriteLine("You must register or sign in first.");
+                        }
+                        else
+                        {
+                            Console.WriteLine($"Order history for current customer {currentCustomer.UserName}:");
+                            oc.DisplayOrderDetailsOfCustomer(currentCustomer.CustomerId);
+                        }
+                        break;
+                    case 9:
+                        //Check order history for a particular store
+                        Console.WriteLine("Select the store you want the order history for:");
+                        sc.DisplayStores();
+                        Console.WriteLine("Enter the store ID to see order history:");
+                        int sid = Int32.Parse(Console.ReadLine());
+                        Console.WriteLine($"Order history for {sc.repository.GetById(sid).StoreName}");
+                        oc.DisplayOrderDetailsOfStore(sid);
+                        break;
+                    case 10:
+                        //Delete a particular store
+                        DeleteStore(sc);
+                        break;
+                    case 11:
+                        //Delete the current customer
+                        Console.WriteLine("Are you sure you want to unregister?(y/n)");
+                        string choice = Console.ReadLine().ToLower();
+                        while(!choice.Equals("y") && !choice.Equals("n"))
+                        {
+                            Console.WriteLine("Please type y or n.");
+                            choice = Console.ReadLine().ToLower();
+                        }
+                        if(choice.Equals("y"))
+                        {
+                            UnregisterCustomer(cc, currentCustomer.CustomerId);
+                            currentCustomer = null;
+                        }
+                        else
+                        {
+                            Console.WriteLine($"{currentCustomer.UserName} was not unregistered.");
+                        }
+                        
+                        break;
+                    case 0:
+                        quit = true;
+                        break;
+                    
+                }
+            }
+            
 
 
-            //Add Stores
-            BuildStore(sc);
+            
 
-            //Add Products
-            BuildProducts(pc);
+            
 
-            //Add Products to Stores
-            AddProductToStore(pc, sc);
+            
 
-            //Place an order
-            PlaceOrder(currentCustomer, sc, pc, oc);
+            
 
             //REQUIREMENTS:
             //place orders to store locations for customers
@@ -44,6 +165,48 @@ namespace StoreApp.App
             //display all order history of a customer
 
 
+        }
+
+        private static void UnregisterCustomer(CustomerController cc, int id)
+        { 
+            try
+            {
+                cc.repository.Delete(id);
+                cc.repository.Save();
+                Console.WriteLine("Unregistered successfully!");
+            }
+            catch (Exception)
+            {
+                Console.WriteLine($"Error occured when trying to unregister customer with ID: {id}");
+            }
+           
+        }
+
+        private static void DeleteStore(StoreController sc)
+        {
+            Console.WriteLine("Select store you want to delete:");
+            sc.DisplayStores();
+            Console.WriteLine("Enter the store ID to delete: ");
+            int sid = Int32.Parse(Console.ReadLine());
+            if(sc.repository.GetAll().Any(s => s.StoreId == sid))
+            {
+                try
+                {
+                    sc.repository.Delete(sid);
+                    sc.repository.Save();
+                    Console.WriteLine("Store deleted successfully!");
+                }
+                catch (Exception)
+                {
+                    Console.WriteLine($"Error occured when trying to delete store with ID: {sid}");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"No store with ID: {sid}");
+            }
+            
+            
         }
 
         private static void PlaceOrder(Customers currentCustomer, StoreController sc, ProductController pc, OrderController oc)
@@ -207,9 +370,8 @@ namespace StoreApp.App
 
             if(sc.repository.GetAll().Any(s => s.StoreId == sid))
             {
-                //Retrieve that store and display the full set of products that exist in the database
-                Stores store = sc.repository.GetById(sid);
-                Console.WriteLine($"Which products do you want to add to the store: {store.StoreName}");
+                //Display the full set of products that exist in the database
+                Console.WriteLine($"Which products do you want to add to the store: {sc.repository.GetById(sid).StoreName}");
                 pc.DisplayProducts();
 
                 //Select the product id, making sure it exists, to link a product to the store
@@ -217,6 +379,8 @@ namespace StoreApp.App
                 int pid = Int32.Parse(Console.ReadLine());
                 if(pc.repository.GetAll().Any(p => p.ProductId == pid))
                 {
+                    //Get that product to be later added to the store inventory
+                    Products product = pc.repository.GetById(pid);
                     //Enter the amount of products to be stored in the stores inventory
                     Console.WriteLine("Enter the quantity of the product to be added:");
                     int qty = Int32.Parse(Console.ReadLine());
@@ -225,10 +389,10 @@ namespace StoreApp.App
                     try
                     {
                         using var context = new _2006StoreApplicationContext(GenericRepository<Products>.Options);
-                        var product = context.Products
-                            .Include(p => p.Inventory)
-                            .First(p => p.ProductId == pid);
-                        product.Inventory.Add(new Inventory { Store = store, Amount = qty });
+                        var store = context.Stores
+                            .Include(s => s.Inventory)
+                            .First(s => s.StoreId == sid);
+                        store.Inventory.Add(new Inventory { Product = product, Amount = qty });
                         context.SaveChanges();
                         Console.WriteLine("Product was added to the store!");
                     }

@@ -18,11 +18,11 @@ CREATE TABLE Orders(
 	OrderDate DATETIME2 DEFAULT SYSUTCDATETIME(),
 	TotalCost MONEY NOT NULL CHECK(TotalCost > 0),
 	CustomerId INT NOT NULL,
-	StoreId INT NOT NULL,
+	StoreId INT NULL,
 	OrderDescription NVARCHAR(255) UNIQUE NOT NULL,
 	PRIMARY KEY(OrderId),
 	CONSTRAINT FK_Orders_Customers_CustomerId FOREIGN KEY(CustomerId) REFERENCES Customers (CustomerId) ON DELETE CASCADE,
-	CONSTRAINT FK_Orders_Stores_StoreId FOREIGN KEY(StoreId) REFERENCES Stores (StoreId)
+	CONSTRAINT FK_Orders_Stores_StoreId FOREIGN KEY(StoreId) REFERENCES Stores (StoreId) ON DELETE SET NULL
 );
 
 
@@ -65,4 +65,4 @@ CREATE TABLE Inventory(
 --Select * from Products;
 --Select * from OrderLines;
 --Select * From Customers;
-
+--Select * From Orders;

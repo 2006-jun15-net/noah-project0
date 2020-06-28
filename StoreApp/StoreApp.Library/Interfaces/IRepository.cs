@@ -12,5 +12,6 @@ namespace StoreApp.Library.Interfaces
         void Add(T obj);
         void Delete(object id);
         void Save();
+        
     }
 }

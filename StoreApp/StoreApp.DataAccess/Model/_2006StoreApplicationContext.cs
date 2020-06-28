@@ -36,10 +36,10 @@ namespace StoreApp.DataAccess.Model
             modelBuilder.Entity<Customers>(entity =>
             {
                 entity.HasKey(e => e.CustomerId)
-                    .HasName("PK__Customer__A4AE64D885F33637");
+                    .HasName("PK__Customer__A4AE64D871C7B433");
 
                 entity.HasIndex(e => e.UserName)
-                    .HasName("UQ__Customer__C9F284565D914E5F")
+                    .HasName("UQ__Customer__C9F2845689FD9082")
                     .IsUnique();
 
                 entity.Property(e => e.FirstName)
@@ -88,10 +88,10 @@ namespace StoreApp.DataAccess.Model
             modelBuilder.Entity<Orders>(entity =>
             {
                 entity.HasKey(e => e.OrderId)
-                    .HasName("PK__Orders__C3905BCFFFC4577F");
+                    .HasName("PK__Orders__C3905BCF31B091C3");
 
                 entity.HasIndex(e => e.OrderDescription)
-                    .HasName("UQ__Orders__B44452B4EBC33CD2")
+                    .HasName("UQ__Orders__B44452B4AB94001F")
                     .IsUnique();
 
                 entity.Property(e => e.OrderDate).HasDefaultValueSql("(sysutcdatetime())");
@@ -109,16 +109,16 @@ namespace StoreApp.DataAccess.Model
                 entity.HasOne(d => d.Store)
                     .WithMany(p => p.Orders)
                     .HasForeignKey(d => d.StoreId)
-                    .OnDelete(DeleteBehavior.ClientSetNull);
+                    .OnDelete(DeleteBehavior.SetNull);
             });
 
             modelBuilder.Entity<Products>(entity =>
             {
                 entity.HasKey(e => e.ProductId)
-                    .HasName("PK__Products__B40CC6CDED33512D");
+                    .HasName("PK__Products__B40CC6CDECB34367");
 
                 entity.HasIndex(e => e.ProductName)
-                    .HasName("UQ__Products__DD5A978AD7BA3336")
+                    .HasName("UQ__Products__DD5A978A1832786A")
                     .IsUnique();
 
                 entity.Property(e => e.Price).HasColumnType("money");
@@ -131,7 +131,7 @@ namespace StoreApp.DataAccess.Model
             modelBuilder.Entity<Stores>(entity =>
             {
                 entity.HasKey(e => e.StoreId)
-                    .HasName("PK__Stores__3B82F10113A01EDD");
+                    .HasName("PK__Stores__3B82F1015B22F25C");
 
                 entity.Property(e => e.StoreName)
                     .IsRequired()

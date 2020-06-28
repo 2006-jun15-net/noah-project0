@@ -14,7 +14,7 @@ namespace StoreApp.DataAccess.Model
         public DateTime? OrderDate { get; set; }
         public decimal TotalCost { get; set; }
         public int CustomerId { get; set; }
-        public int StoreId { get; set; }
+        public int? StoreId { get; set; }
         public string OrderDescription { get; set; }
 
         public virtual Customers Customer { get; set; }

@@ -8,10 +8,19 @@ using System.Linq;
 
 namespace StoreApp.DataAccess.Repos
 {
+    /// <summary>
+    /// This class controls the repository for the Orders table in the database and provides other methods specific to Orders
+    /// </summary>
     public class OrderController
     {
+        /// <summary>
+        /// Repository that handle DML operations for the Orders table
+        /// </summary>
         public readonly IRepository<Orders> repository = null;
 
+        /// <summary>
+        /// Iniitializes the repository for Orders
+        /// </summary>
         public OrderController()
         {
             repository = new GenericRepository<Orders>();
@@ -20,6 +29,10 @@ namespace StoreApp.DataAccess.Repos
         {
             repository = repo;
         }
+
+        /// <summary>
+        /// Prints out an overview of all the orders in the Orders table
+        /// </summary>
         public void DisplayOrders()
         {
             Console.WriteLine("List of Orders:");
@@ -31,6 +44,10 @@ namespace StoreApp.DataAccess.Repos
             }
         }
 
+        /// <summary>
+        /// Prints the details of a specific order including the product details of the order
+        /// </summary>
+        /// <param name="orderId">The id of the order</param>
         public void DisplayOrderDetails(int orderId)
         {
             if(repository.GetAll().Any(o => o.OrderId == orderId))
@@ -55,6 +72,11 @@ namespace StoreApp.DataAccess.Repos
             }
             
         }
+
+        /// <summary>
+        /// Prints the order details of every order placed at a particular store
+        /// </summary>
+        /// <param name="storeId">The id of the store</param>
         public void DisplayOrderDetailsOfStore(int storeId)
         {
             if (repository.GetAll().Any(o => o.StoreId == storeId))
@@ -72,6 +94,10 @@ namespace StoreApp.DataAccess.Repos
             
         }
         
+        /// <summary>
+        /// Prints the order details of every order placed by a particular customer
+        /// </summary>
+        /// <param name="customerId">The id of the customer</param>
         public void DisplayOrderDetailsOfCustomer(int customerId)
         {
             if (repository.GetAll().Any(o => o.CustomerId == customerId))

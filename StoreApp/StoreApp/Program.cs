@@ -12,6 +12,14 @@ namespace StoreApp.App
 {
     public class Program
     {
+        //REQUIREMENTS:
+        //place orders to store locations for customers
+        //add a new customer
+        //search customers by name
+        //display details of an order
+        //display all order history of a store location
+        //display all order history of a customer
+
         static void Main(string[] args)
         {
             CustomerController cc = new CustomerController();
@@ -28,7 +36,7 @@ namespace StoreApp.App
                 "2: Create new store\n" +
                 "3: Create new product\n" +
                 "4: Add products to a store\n" +
-                "5. Place an order" +
+                "5. Place an order\n" +
                 "6: Search for customer by username\n" +
                 "7: Display details of an order\n" +
                 "8: Display order history of a customer\n" +
@@ -146,27 +154,12 @@ namespace StoreApp.App
                 }
             }
             
-
-
-            
-
-            
-
-            
-
-            
-
-            //REQUIREMENTS:
-            //place orders to store locations for customers
-            //add a new customer
-            //search customers by name
-            //display details of an order
-            //display all order history of a store location
-            //display all order history of a customer
-
-
         }
-
+        /// <summary>
+        /// Removes a customer from the database
+        /// </summary>
+        /// <param name="cc">The CustomerController</param>
+        /// <param name="id">The id of the customer</param>
         private static void UnregisterCustomer(CustomerController cc, int id)
         { 
             try
@@ -182,6 +175,10 @@ namespace StoreApp.App
            
         }
 
+        /// <summary>
+        /// User interface that handles removing a store from the database
+        /// </summary>
+        /// <param name="sc">The StoreController</param>
         private static void DeleteStore(StoreController sc)
         {
             Console.WriteLine("Select store you want to delete:");
@@ -209,6 +206,13 @@ namespace StoreApp.App
             
         }
 
+        /// <summary>
+        /// User interface that guides the user to place an order for the current customer.
+        /// </summary>
+        /// <param name="currentCustomer">The current customer placing the order</param>
+        /// <param name="sc">The StoreController</param>
+        /// <param name="pc">The ProductController</param>
+        /// <param name="oc">The OrderController</param>
         private static void PlaceOrder(Customers currentCustomer, StoreController sc, ProductController pc, OrderController oc)
         {
             //Select the store you want to place an order to
@@ -360,6 +364,11 @@ namespace StoreApp.App
 
         }
 
+        /// <summary>
+        /// User interface that guides the user to add Products to a single store
+        /// </summary>
+        /// <param name="pc">The ProductController</param>
+        /// <param name="sc">The StoreController</param>
         private static void AddProductToStore(ProductController pc, StoreController sc)
         {
             //Select the store to add products to and make sure it exists
@@ -414,6 +423,10 @@ namespace StoreApp.App
 
         }
 
+        /// <summary>
+        /// User interface that guides the user to create a new product and add it to the database
+        /// </summary>
+        /// <param name="pc">The ProductController</param>
         private static void BuildProducts(ProductController pc)
         {
             //Give the product a name and then make sure it doesn't already exist
@@ -445,6 +458,10 @@ namespace StoreApp.App
             }
         }
 
+        /// <summary>
+        /// User interface that guides the user to create a new store and adds it to the database
+        /// </summary>
+        /// <param name="sc">The StoreController</param>
         private static void BuildStore(StoreController sc)
         {
             //Give the new store a name
@@ -466,6 +483,12 @@ namespace StoreApp.App
             
         }
 
+        /// <summary>
+        /// User interface that allows the user to register as a new customer or sign in as an existing customer
+        /// A new customer is added to the database
+        /// </summary>
+        /// <param name="cc">The CustomerController</param>
+        /// <returns>The Customer (either recently created or taken from the database)</returns>
         private static Customers RegisterCustomer(CustomerController cc)
         {
             //Ask if the user is registered or not

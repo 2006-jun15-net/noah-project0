@@ -60,9 +60,9 @@ CREATE TABLE Inventory(
 --DROP TABLE Stores
 
 
---Select * From Inventory;
---Select * From Stores;
---Select * from Products;
---Select * from OrderLines;
---Select * From Customers;
---Select * From Orders;
+Select * From Inventory;
+Select * From Stores;
+Select * from Products;
+Select * from OrderLines;
+Select * From Customers;
+Select * From Orders;

@@ -49,15 +49,14 @@ namespace StoreApp.App
             while(!quit)
             {
                 Console.WriteLine(homeMenu);
-                Console.WriteLine("Enter your selection(0-9):");
-                int input = Int32.Parse(Console.ReadLine());
-                if (input != 0 && input != 1 && input != 2 && input != 3 && input != 4 && input != 5 
-                    && input != 6 && input != 7 && input != 8 && input != 9 && input != 10 && input != 11)
+                Console.WriteLine("Enter your selection(0-11):");
+                string userIn = Console.ReadLine();
+                int input;
+                while (!int.TryParse(userIn, out input))
                 {
-                    Console.WriteLine("Invalid input. Please enter 0-9.");
-                    input = Int32.Parse(Console.ReadLine());
+                    Console.WriteLine("Invalid input. Not a number.");
+                    userIn = Console.ReadLine();
                 }
-                
 
                 switch(input)
                 {
@@ -99,7 +98,13 @@ namespace StoreApp.App
                         Console.WriteLine("Select the order you want details for:");
                         oc.DisplayOrders();
                         Console.WriteLine("Enter the Order ID to get details: ");
-                        int oid = Int32.Parse(Console.ReadLine());
+                        userIn = Console.ReadLine();
+                        int oid;
+                        while (!int.TryParse(userIn, out oid))
+                        {
+                            Console.WriteLine("Invalid input. Not a number.");
+                            userIn = Console.ReadLine();
+                        }
                         oc.DisplayOrderDetails(oid);
                         break;
                     case 8:
@@ -119,9 +124,23 @@ namespace StoreApp.App
                         Console.WriteLine("Select the store you want the order history for:");
                         sc.DisplayStores();
                         Console.WriteLine("Enter the store ID to see order history:");
-                        int sid = Int32.Parse(Console.ReadLine());
-                        Console.WriteLine($"Order history for {sc.repository.GetById(sid).StoreName}");
-                        oc.DisplayOrderDetailsOfStore(sid);
+                        userIn = Console.ReadLine();
+                        int sid;
+                        while (!int.TryParse(userIn, out sid))
+                        {
+                            Console.WriteLine("Invalid input. Not a number.");
+                            userIn = Console.ReadLine();
+                        }
+                        if (sc.repository.GetAll().Any(s => s.StoreId == sid))
+                        {
+                            Console.WriteLine($"Order history for {sc.repository.GetById(sid).StoreName}");
+                            oc.DisplayOrderDetailsOfStore(sid);
+                        }
+                        else
+                        {
+                            Console.WriteLine($"Store with ID: {sid} does not exist.");
+                        }
+                        
                         break;
                     case 10:
                         //Delete a particular store
@@ -145,12 +164,13 @@ namespace StoreApp.App
                         {
                             Console.WriteLine($"{currentCustomer.UserName} was not unregistered.");
                         }
-                        
                         break;
                     case 0:
                         quit = true;
                         break;
-                    
+                    default:
+                        Console.WriteLine("Invalid input. Please enter 1-11.");
+                        break;
                 }
             }
             
@@ -184,8 +204,15 @@ namespace StoreApp.App
             Console.WriteLine("Select store you want to delete:");
             sc.DisplayStores();
             Console.WriteLine("Enter the store ID to delete: ");
-            int sid = Int32.Parse(Console.ReadLine());
-            if(sc.repository.GetAll().Any(s => s.StoreId == sid))
+            string userIn = Console.ReadLine();
+            int sid;
+            while (!int.TryParse(userIn, out sid))
+            {
+                Console.WriteLine("Invalid input. Not a number.");
+                Console.WriteLine("Enter the store ID to delete: ");
+                userIn = Console.ReadLine();
+            }
+            if (sc.repository.GetAll().Any(s => s.StoreId == sid))
             {
                 try
                 {
@@ -219,7 +246,14 @@ namespace StoreApp.App
             Console.WriteLine("Which store would you like to place an order to: ");
             sc.DisplayStores();
             Console.WriteLine("Enter the store ID: ");
-            int sid = Int32.Parse(Console.ReadLine());
+            string userIn = Console.ReadLine();
+            int sid;
+            while (!int.TryParse(userIn, out sid))
+            {
+                Console.WriteLine("Invalid input. Not a number.");
+                Console.WriteLine("Enter the store ID: ");
+                userIn = Console.ReadLine();
+            }
 
             //If the store id that was inputted exists list the products in that store
             if (sc.repository.GetAll().Any(s => s.StoreId == sid))
@@ -244,10 +278,17 @@ namespace StoreApp.App
                         Console.WriteLine($"Product: {item.Product.ProductName} Price: ${item.Product.Price} ID: {item.Product.ProductId} In Stock: {item.Amount}\n");
                     }
                     Console.WriteLine("Enter product ID to add to order(or type 0 to quit):");
-                    int pid = Int32.Parse(Console.ReadLine());
+                    userIn = Console.ReadLine();
+                    int pid;
+                    while (!int.TryParse(userIn, out pid))
+                    {
+                        Console.WriteLine("Invalid input. Not a number.");
+                        Console.WriteLine("Enter product ID to add to order(or type 0 to quit):");
+                        userIn = Console.ReadLine();
+                    }
 
                     //prevent the user from adding the same item to their order
-                    if(productsInOrder != null)
+                    if (productsInOrder != null)
                     {
                         while (productsInOrder.Keys.Any(p => p.ProductId == pid))
                         {
@@ -257,7 +298,13 @@ namespace StoreApp.App
                                 Console.WriteLine($"Product: {item.Product.ProductName} Price: ${item.Product.Price} ID: {item.Product.ProductId} In Stock: {item.Amount}\n");
                             }
                             Console.WriteLine("Enter product ID to add to order(or type 0 to quit):");
-                            pid = Int32.Parse(Console.ReadLine());
+                            userIn = Console.ReadLine();
+                            while (!int.TryParse(userIn, out pid))
+                            {
+                                Console.WriteLine("Invalid input. Not a number.");
+                                Console.WriteLine("Enter product ID to add to order(or type 0 to quit):");
+                                userIn = Console.ReadLine();
+                            }
                         }
                     }
                     
@@ -271,7 +318,14 @@ namespace StoreApp.App
                         //check that it is >= 0
                         var p = pc.repository.GetById(pid);
                         Console.WriteLine($"How many {p.ProductName}s do you want to add to the order:");
-                        int qty = Int32.Parse(Console.ReadLine());
+                        userIn = Console.ReadLine();
+                        int qty;
+                        while (!int.TryParse(userIn, out qty))
+                        {
+                            Console.WriteLine("Invalid input. Not a number.");
+                            Console.WriteLine($"How many {p.ProductName}s do you want to add to the order:");
+                            userIn = Console.ReadLine();
+                        }
                         if (qty > 0)
                         {
                             
@@ -375,9 +429,15 @@ namespace StoreApp.App
             Console.WriteLine("Which store do you want to add products to: \n");
             sc.DisplayStores();
             Console.WriteLine("Enter Store ID: ");
-            int sid = Int32.Parse(Console.ReadLine());
+            string userIn = Console.ReadLine();
+            int sid;
+            while (!int.TryParse(userIn, out sid))
+            {
+                Console.WriteLine("Invalid input. Not a number.");
+                userIn = Console.ReadLine();
+            }
 
-            if(sc.repository.GetAll().Any(s => s.StoreId == sid))
+            if (sc.repository.GetAll().Any(s => s.StoreId == sid))
             {
                 //Display the full set of products that exist in the database
                 Console.WriteLine($"Which products do you want to add to the store: {sc.repository.GetById(sid).StoreName}");
@@ -385,14 +445,28 @@ namespace StoreApp.App
 
                 //Select the product id, making sure it exists, to link a product to the store
                 Console.WriteLine("Enter Product ID to add to store: ");
-                int pid = Int32.Parse(Console.ReadLine());
-                if(pc.repository.GetAll().Any(p => p.ProductId == pid))
+                userIn = Console.ReadLine();
+                int pid;
+                while (!int.TryParse(userIn, out pid))
+                {
+                    Console.WriteLine("Invalid input. Not a number.");
+                    userIn = Console.ReadLine();
+                }
+                if (pc.repository.GetAll().Any(p => p.ProductId == pid))
                 {
                     //Get that product to be later added to the store inventory
                     Products product = pc.repository.GetById(pid);
+
                     //Enter the amount of products to be stored in the stores inventory
                     Console.WriteLine("Enter the quantity of the product to be added:");
-                    int qty = Int32.Parse(Console.ReadLine());
+                    userIn = Console.ReadLine();
+                    int qty;
+                    while (!int.TryParse(userIn, out qty))
+                    {
+                        Console.WriteLine("Invalid input. Not a number.");
+                        userIn = Console.ReadLine();
+                    }
+
                     //Try adding the products to the store
                     //If the product already existed in the store the product won't be added and an error is thrown
                     try
@@ -440,7 +514,13 @@ namespace StoreApp.App
             {
                 //Give the product a price that can't be zero or negative
                 Console.WriteLine("Enter price for the product:");
-                decimal price = Decimal.Parse(Console.ReadLine());
+                string userIn = Console.ReadLine();
+                decimal price;
+                while (!decimal.TryParse(userIn, out price))
+                {
+                    Console.WriteLine("Invalid input. Not a number.");
+                    userIn = Console.ReadLine();
+                }
                 if (price <= 0)
                 {
                     Console.WriteLine("Price can't be negative or zero.");
@@ -494,7 +574,13 @@ namespace StoreApp.App
             //Ask if the user is registered or not
             Customers currentCustomer = new Customers();
             Console.WriteLine("Register as new customer.(If already registered type 1, else type 2):");
-            int input = Int32.Parse(Console.ReadLine());
+            string userIn = Console.ReadLine();
+            int input;
+            while (!int.TryParse(userIn, out input))
+            {
+                Console.WriteLine("Invalid input. Not a number.");
+                userIn = Console.ReadLine();
+            }
 
             //If they are not registered, display a list of registered customers
             if (input == 1)
@@ -507,8 +593,23 @@ namespace StoreApp.App
                 {
                     cc.DisplayCustomers();
                     Console.WriteLine("Enter customer ID to begin: ");
-                    int cid = Int32.Parse(Console.ReadLine());
-                    currentCustomer = cc.repository.GetById(cid);
+                    userIn = Console.ReadLine();
+                    int cid;
+                    while (!int.TryParse(userIn, out cid))
+                    {
+                        Console.WriteLine("Invalid input. Not a number.");
+                        userIn = Console.ReadLine();
+                    }
+                    if(cc.repository.GetAll().Any(c => c.CustomerId == cid))
+                    {
+                        currentCustomer = cc.repository.GetById(cid);
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Customer with ID: {cid} does not exist.");
+                        currentCustomer = null;
+                    }
+                    
                    
                 }
             }

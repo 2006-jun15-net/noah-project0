@@ -3,7 +3,7 @@ using Xunit;
 
 namespace StoreApp.Test
 {
-    public class StoreTest
+    public class OrderControllerTest
     {
         [Fact]
         public void DisplayOrdersShouldDisplayOrders()

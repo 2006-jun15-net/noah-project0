@@ -6,21 +6,21 @@ using System.Text;
 
 namespace StoreApp.Library.Interfaces
 {
-    public class Mapper
+    public static class Mapper
     {
-        public Customers ModelToDbEntity(Customer c)
+        public static Customers ModelToEntity(Customer c)
         {
             return new Customers { FirstName = c.FirstName, LastName = c.LastName };
         }
-        public Products ModelToDbEntity(Product p)
+        public static Products ModelToEntity(Product p)
         {
             return new Products { ProductName = p.Name, Price = p.Price};
         }
-        //public Stores ModelToDbEntity(Store s)
+        //public static Stores ModelToEntity(Store s)
         //{
         //    Stores store = new Stores();
         //    store.StoreName = s.Name;
-            
+
         //}
     }
 }

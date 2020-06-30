@@ -6,8 +6,20 @@ namespace StoreApp.Library.Model
 {
     public class Store
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public Dictionary<Product, int> Inventory {get; set;}
+        private string _name;
+        public int StoreId { get; set; } = 0;
+        public string Name 
+        {
+            get => _name;
+            set
+            {
+                if(value.Length == 0)
+                {
+                    throw new ArgumentException("Must have a name.", nameof(value));
+                }
+                _name = value;
+            }
+        }
+        public Dictionary<Product, int> Inventory { get; set; } = new Dictionary<Product, int>();
     }
 }

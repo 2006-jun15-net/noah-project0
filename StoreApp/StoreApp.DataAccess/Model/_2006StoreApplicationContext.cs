@@ -36,10 +36,10 @@ namespace StoreApp.DataAccess.Model
             modelBuilder.Entity<Customers>(entity =>
             {
                 entity.HasKey(e => e.CustomerId)
-                    .HasName("PK__Customer__A4AE64D871C7B433");
+                    .HasName("PK__Customer__A4AE64D8E35F4E98");
 
                 entity.HasIndex(e => e.UserName)
-                    .HasName("UQ__Customer__C9F2845689FD9082")
+                    .HasName("UQ__Customer__C9F284562F3150ED")
                     .IsUnique();
 
                 entity.Property(e => e.FirstName)
@@ -88,10 +88,10 @@ namespace StoreApp.DataAccess.Model
             modelBuilder.Entity<Orders>(entity =>
             {
                 entity.HasKey(e => e.OrderId)
-                    .HasName("PK__Orders__C3905BCF31B091C3");
+                    .HasName("PK__Orders__C3905BCF729F97B3");
 
                 entity.HasIndex(e => e.OrderDescription)
-                    .HasName("UQ__Orders__B44452B4AB94001F")
+                    .HasName("UQ__Orders__B44452B470E2C677")
                     .IsUnique();
 
                 entity.Property(e => e.OrderDate).HasDefaultValueSql("(sysutcdatetime())");
@@ -115,10 +115,10 @@ namespace StoreApp.DataAccess.Model
             modelBuilder.Entity<Products>(entity =>
             {
                 entity.HasKey(e => e.ProductId)
-                    .HasName("PK__Products__B40CC6CDECB34367");
+                    .HasName("PK__Products__B40CC6CDDF4DC633");
 
                 entity.HasIndex(e => e.ProductName)
-                    .HasName("UQ__Products__DD5A978A1832786A")
+                    .HasName("UQ__Products__DD5A978A87D95E69")
                     .IsUnique();
 
                 entity.Property(e => e.Price).HasColumnType("money");
@@ -131,7 +131,7 @@ namespace StoreApp.DataAccess.Model
             modelBuilder.Entity<Stores>(entity =>
             {
                 entity.HasKey(e => e.StoreId)
-                    .HasName("PK__Stores__3B82F1015B22F25C");
+                    .HasName("PK__Stores__3B82F101919FC2B0");
 
                 entity.Property(e => e.StoreName)
                     .IsRequired()

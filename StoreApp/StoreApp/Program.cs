@@ -55,6 +55,7 @@ namespace StoreApp.App
                 while (!int.TryParse(userIn, out input))
                 {
                     Console.WriteLine("Invalid input. Not a number.");
+                    Console.WriteLine("Enter your selection(0-11):");
                     userIn = Console.ReadLine();
                 }
 

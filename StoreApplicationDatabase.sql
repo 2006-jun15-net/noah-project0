@@ -9,7 +9,7 @@ CREATE TABLE Customers(
 
 CREATE TABLE Stores(
 	StoreId INT IDENTITY(1,1) NOT NULL,
-	StoreName NVARCHAR(255) NOT NULL,
+	StoreName NVARCHAR(255) NOT NULL UNIQUE,
 	PRIMARY KEY(StoreId),
 );
 
@@ -19,7 +19,6 @@ CREATE TABLE Orders(
 	TotalCost MONEY NOT NULL CHECK(TotalCost > 0),
 	CustomerId INT NOT NULL,
 	StoreId INT NULL,
-	OrderDescription NVARCHAR(255) UNIQUE NOT NULL,
 	PRIMARY KEY(OrderId),
 	CONSTRAINT FK_Orders_Customers_CustomerId FOREIGN KEY(CustomerId) REFERENCES Customers (CustomerId) ON DELETE CASCADE,
 	CONSTRAINT FK_Orders_Stores_StoreId FOREIGN KEY(StoreId) REFERENCES Stores (StoreId) ON DELETE SET NULL
@@ -37,7 +36,7 @@ CREATE TABLE Products(
 CREATE TABLE OrderLines(
 	OrderId INT NOT NULL,
 	ProductId INT NOT NULL,
-	Amount INT DEFAULT 1 CHECK(Amount > 0),
+	Amount INT CHECK(Amount > 0) NOT NULL,
 	CONSTRAINT PK_OrderLines_OrderId_ProductId PRIMARY KEY(OrderId, ProductId),
 	CONSTRAINT FK_OrderLines_Products_ProductId FOREIGN KEY(ProductId) REFERENCES Products (ProductId) ON DELETE CASCADE,
 	CONSTRAINT FK_OrderLines_Orders_OrderId FOREIGN KEY(OrderId) REFERENCES Orders (OrderId) ON DELETE CASCADE
@@ -60,9 +59,9 @@ CREATE TABLE Inventory(
 --DROP TABLE Stores
 
 
-Select * From Inventory;
-Select * From Stores;
-Select * from Products;
-Select * from OrderLines;
-Select * From Customers;
-Select * From Orders;
+--Select * From Inventory;
+--Select * From Stores;
+--Select * from Products;
+--Select * from OrderLines;
+--Select * From Customers;
+--Select * From Orders;

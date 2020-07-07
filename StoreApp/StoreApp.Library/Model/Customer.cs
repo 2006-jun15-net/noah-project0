@@ -10,7 +10,14 @@ namespace StoreApp.Library.Model
         private string _UserName;
         private string _FirstName;
         private string _LastName;
+        /// <summary>
+        /// Id for the customer
+        /// </summary>
         public int CustomerId { get; set; } = 0;
+        
+        /// <summary>
+        /// Username for the customer
+        /// </summary>
         public string UserName 
         {
             get => _UserName;
@@ -26,6 +33,10 @@ namespace StoreApp.Library.Model
                 }
             }
         }
+
+        /// <summary>
+        /// First name of the customer
+        /// </summary>
         public string FirstName
         {
             get => _FirstName;
@@ -41,6 +52,9 @@ namespace StoreApp.Library.Model
                 }
             }
         }
+        /// <summary>
+        /// Last name of the customer
+        /// </summary>
         public string LastName
         {
             get => _LastName;
@@ -56,6 +70,9 @@ namespace StoreApp.Library.Model
                 }
             }
         }
+        /// <summary>
+        /// Order history of the customer
+        /// </summary>
         public List<Order> OrderHistory { get; set; } = new List<Order>();
 
 

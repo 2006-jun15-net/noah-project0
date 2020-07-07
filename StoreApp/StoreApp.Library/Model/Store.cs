@@ -7,7 +7,13 @@ namespace StoreApp.Library.Model
     public class Store
     {
         private string _name;
+        /// <summary>
+        /// Id of the store
+        /// </summary>
         public int StoreId { get; set; } = 0;
+        /// <summary>
+        /// Name of the store
+        /// </summary>
         public string Name 
         {
             get => _name;
@@ -20,6 +26,9 @@ namespace StoreApp.Library.Model
                 _name = value;
             }
         }
+        /// <summary>
+        /// Products available at the store and how much 
+        /// </summary>
         public Dictionary<Product, int> Inventory { get; set; } = new Dictionary<Product, int>();
     }
 }

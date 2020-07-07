@@ -8,7 +8,13 @@ namespace StoreApp.Library.Model
     {
         private string _name;
         private decimal _price;
+        /// <summary>
+        /// Id of the product
+        /// </summary>
         public int ProductId { get; set; } = 0;
+        /// <summary>
+        /// Name of the product
+        /// </summary>
         public string Name 
         {
             get => _name;
@@ -22,6 +28,9 @@ namespace StoreApp.Library.Model
             }
                 
         }
+        /// <summary>
+        /// Price of the product
+        /// </summary>
         public decimal Price 
         {
             get => _price;

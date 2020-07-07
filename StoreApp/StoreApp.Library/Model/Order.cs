@@ -8,10 +8,25 @@ namespace StoreApp.Library.Model
 {
     public class Order
     {
+        /// <summary>
+        /// Customer of the order
+        /// </summary>
         private Customer _customer;
+        /// <summary>
+        /// Store that the order was placed at
+        /// </summary>
         private Store _store;
+        /// <summary>
+        /// Total cost of the order
+        /// </summary>
         private decimal _totalCost = 0;
+        /// <summary>
+        /// Id of the order
+        /// </summary>
         public int OrderId { get; set; } = 0;
+        /// <summary>
+        /// Date of the order
+        /// </summary>
         public DateTime? OrderDate { get; set; } = null;
         public Customer Customer 
         {
@@ -37,6 +52,9 @@ namespace StoreApp.Library.Model
                 _store = value;
             }
         }
+        /// <summary>
+        /// Products in the order and their quantities
+        /// </summary>
         public Dictionary<Product, int> OrderLine { get; set; } = new Dictionary<Product, int>();
         public decimal TotalCost 
         { 

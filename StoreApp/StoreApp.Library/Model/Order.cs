@@ -15,7 +15,13 @@ namespace StoreApp.Library.Model
         /// Private fields for Order info such as customer, store location, and total cost of order(by default, intially 0)
         /// </summary>
         private Customer _customer;
+        /// <summary>
+        /// Store that the order was placed at
+        /// </summary>
         private Store _store;
+        /// <summary>
+        /// Total cost of the order
+        /// </summary>
         private decimal _totalCost = 0;
 
         //Order Id that uniquely identifies the order
